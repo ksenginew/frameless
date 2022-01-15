@@ -9,6 +9,19 @@ export function compiler(source) {
   return { server, static }
 }
 
-export function ssr(server, static) {
-  return new Function(${server}return${static};)
+export let html = (strings, ...args) =>
+  strings.reduce(
+    (previous, current, index) => {
+      let value = (args[index] || "")
+      if (typeof value == 'object')
+        value = Object.entries(value).map(([k, v]) => k + '=' + JSON.stringify(v)).join(' ')
+      return previous + current + (args[index] || "")
+    },
+    ""
+  )
+
+export let ctx = { html }
+
+export function ssrJs(server, static) {
+  return new Function('__', server+'return __.html`' + static + '`;')
 }
