@@ -9,16 +9,35 @@ export function compiler(source) {
   return { server, static }
 }
 
-export let html = (strings, ...args) =>
-  strings.reduce(
-    (previous, current, index) => {
-      let value = (args[index] || "")
-      if (typeof value == 'object')
-        value = Object.entries(value).map(([k, v]) => k + '=' + JSON.stringify(v)).join(' ')
-      return previous + current + (args[index] || "")
-    },
-    ""
+let HTMLRE =
+  /<(\/?)([^\s/>]*)|\s+([^\s/>]+)(?:\s*=\s*("(?:\\"|[^"])*"|[^\s/>]+))?|(\/?)>|([^<]+)/g
+
+let html = (strings, ...args) => {
+  let src = strings.reduce(
+    (previous, current, index) => previous + current + '{%' + index + '%}',
+    ''
   )
+
+  let isTag = 0
+  let tagname
+  let attrMap = {}
+  let tree = [[]]
+  while ((m = HTMLRE.exec(src))) {
+    tokens.push(m[0])
+    if(!isTag && m[6])
+        tree[0].push()
+    else if (isTag && m[5])
+        tree.unshift([tagname, attrMap])
+    else if (isTag && m[3])
+        attrMap[m[3]] = m[4]
+    else if (!isTag && m[1])
+        tree.
+    else
+      tree[0]
+  }
+
+  return tokens
+}
 
 export let ctx = { html }
 
