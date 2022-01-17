@@ -1,13 +1,17 @@
-let SERVERRE =
-  /<\s*script(\s+[^]*?)?\sserver(\s+[^]*?)?>([^]*?)<\/\s*script\s*>/g;
+let RE =
+  /<script([^]*?)>([^]*?)<\/script\s*>|<script([^]*?)>([^]*?)<\/script\s*>/g;
 
 export function compiler(source) {
   let server = "";
-  let static = source.replace(SERVERRE, (_, $1, $2, $3) => {
-    server += $2 + "\n";
+  let style = "";
+  let static = source.replace(SCRIPT, (_, $1, $2, $3, $4) => {
+    if($2)
+      server += $2 + "\n";
+    if($4)
+      style += $4;
     return "";
   });
-  return { server, static };
+  return { server, static, style };
 }
 
 export function ssrJs(server, static) {
