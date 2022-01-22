@@ -5,7 +5,7 @@ import {readFileSync} from 'fs'
 describe('test', () => {
   test('all', () => {
     globbySync('examples/**/App.html').map(file => {
-      let { server, html, style } = compiler(readFileSync(file))
+      let { server, html, style } = compiler(readFileSync(file).toString())
       expect(`
       // file: ${file}
       function App() {
@@ -13,7 +13,7 @@ describe('test', () => {
 
         return \`${html}\`
       }
-      `).matchSnapShot()
+      `).toMatchSnapshot()
     })
   })
 })
