@@ -1,4 +1,4 @@
-import {globby} from 'globby';
+import {globbySync} from 'globby';
 import {compiler, ssrJs} from './compiler';
 import {readFileSync} from 'fs'
 
