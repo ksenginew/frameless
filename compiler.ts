@@ -1,7 +1,7 @@
 let RE =
   /<script([^]*?)>([^]*?)<\/script\s*>|<script([^]*?)>([^]*?)<\/script\s*>/g;
 
-export function compiler(source) {
+export function compiler(source: string) {
   let server = "";
   let style = "";
   let html = source.replace(SCRIPT, (_, $1, $2, $3, $4) => {
@@ -14,6 +14,6 @@ export function compiler(source) {
   return { server, html, style };
 }
 
-export function ssrJs(server, static) {
+export function ssrJs(server: string, static: string) {
   return new Function("__", server + "return `" + static + "`;");
 }
