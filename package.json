@@ -2,7 +2,6 @@
   "name": "frameless",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
   "main": "compiler.js",
   "directories": {
     "example": "examples"
