@@ -8,7 +8,7 @@ js   =
 ------------------------------
 css  = 
 ------------------------------
-html =<h1>Hello World!</h1>
+html = <h1>Hello World!</h1>
 
 "
 `;
@@ -24,7 +24,7 @@ js   =
 ------------------------------
 css  = 
 ------------------------------
-html =
+html = 
 
 <h1>Hello \${name.toUpperCase()}!</h1>
 
@@ -43,7 +43,7 @@ js   =
 ------------------------------
 css  = 
 ------------------------------
-html =
+html = 
 
 <img \${{src}} alt=\\"\${name} dances.\\">
 
@@ -57,16 +57,16 @@ exports[`test all 4`] = `
 js   = 
 ------------------------------
 css  = 
-------------------------------
-html =<p>This is a paragraph.</p>
-
-<style>
 	p {
 		color: purple;
 		font-family: 'Comic Sans MS', cursive;
 		font-size: 2em;
 	}
-</style>
+
+------------------------------
+html = <p>This is a paragraph.</p>
+
+
 
 "
 `;
