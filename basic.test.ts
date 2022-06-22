@@ -13,7 +13,7 @@ js   = ${server}
 ------------------------------
 css  = ${style}
 ------------------------------
-html =${html}
+html = ${html}
 `).toMatchSnapshot()
     })
   })
