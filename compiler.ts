@@ -1,13 +1,13 @@
-let SCRIPT =
+let RE =
   /<script([^]*?)>([^]*?)<\/script\s*>|<script([^]*?)>([^]*?)<\/script\s*>/g;
 
 export function compiler(source: string) {
   let server = "";
   let style = "";
-  let html = source.replace(SCRIPT, (_, $1, $2, $3, $4) => {
-    if($2)
+  let html = source.replace(RE, (_, $1, $2, $3, $4) => {
+    if ($2)
       server += $2 + "\n";
-    if($4)
+    if ($4)
       style += $4;
     return "";
   });
