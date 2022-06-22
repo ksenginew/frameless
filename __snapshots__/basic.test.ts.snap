@@ -2,58 +2,63 @@
 
 exports[`test all 1`] = `
 "
-      // file: examples/01-introduction/01-basics/App.html
-      function App() {
-        
+// file: examples/01-introduction/01-basics/App.html
+------------------------------
+js   = 
+------------------------------
+css  = 
+------------------------------
+html =<h1>Hello World!</h1>
 
-        return \`<h1>Hello World!</h1>
-\`
-      }
-      "
+"
 `;
 
 exports[`test all 2`] = `
 "
-      // file: examples/01-introduction/02-adding-data/App.html
-      function App() {
-        
+// file: examples/01-introduction/02-adding-data/App.html
+------------------------------
+js   = 
 	let name = 'world';
 
 
-
-        return \`
+------------------------------
+css  = 
+------------------------------
+html =
 
 <h1>Hello \${name.toUpperCase()}!</h1>
-\`
-      }
-      "
+
+"
 `;
 
 exports[`test all 3`] = `
 "
-      // file: examples/01-introduction/03-dynamic-attributes/App.html
-      function App() {
-        
+// file: examples/01-introduction/03-dynamic-attributes/App.html
+------------------------------
+js   = 
 	let src = '/tutorial/image.gif';
 	let name = 'Rick Astley';
 
 
-
-        return \`
+------------------------------
+css  = 
+------------------------------
+html =
 
 <img \${{src}} alt=\\"\${name} dances.\\">
-\`
-      }
-      "
+
+"
 `;
 
 exports[`test all 4`] = `
 "
-      // file: examples/01-introduction/04-styling/App.html
-      function App() {
-        
-
-        return \`<p>This is a paragraph.</p>
+// file: examples/01-introduction/04-styling/App.html
+------------------------------
+js   = 
+------------------------------
+css  = 
+------------------------------
+html =<p>This is a paragraph.</p>
 
 <style>
 	p {
@@ -62,7 +67,6 @@ exports[`test all 4`] = `
 		font-size: 2em;
 	}
 </style>
-\`
-      }
-      "
+
+"
 `;
