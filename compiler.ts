@@ -1,5 +1,5 @@
 let RE =
-  /<script([^]*?)>([^]*?)<\/script\s*>|<script([^]*?)>([^]*?)<\/script\s*>/g;
+  /<script([^]*?)>([^]*?)<\/script\s*>|<style([^]*?)>([^]*?)<\/style\s*>/g;
 
 export function compiler(source: string) {
   let server = "";
