@@ -1,4 +1,4 @@
-let RE =
+let SCRIPT =
   /<script([^]*?)>([^]*?)<\/script\s*>|<script([^]*?)>([^]*?)<\/script\s*>/g;
 
 export function compiler(source: string) {
@@ -14,6 +14,6 @@ export function compiler(source: string) {
   return { server, html, style };
 }
 
-export function ssrJs(server: string, static: string) {
-  return new Function("__", server + "return `" + static + "`;");
+export function ssrJs(server: string, _static: string) {
+  return new Function("__", server + "return `" + _static + "`;");
 }
