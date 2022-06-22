@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/ksenginew/frameless#readme",
   "devDependencies": {
+    "@types/glob": "^7.2.0",
     "@types/jest": "^27.4.0",
-    "globby": "^12.2.0",
+    "@types/node": "^18.0.0",
+    "glob": "^8.0.3",
     "jest": "^27.4.7",
     "microbundle": "^0.14.2",
     "prettier": "^2.5.1",

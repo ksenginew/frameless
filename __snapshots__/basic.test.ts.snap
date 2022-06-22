@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test all 1`] = `
+"
+      // file: examples/01-introduction/01-basics/App.html
+      function App() {
+        
+
+        return \`<h1>Hello World!</h1>
+\`
+      }
+      "
+`;
+
+exports[`test all 2`] = `
+"
+      // file: examples/01-introduction/02-adding-data/App.html
+      function App() {
+        
+	let name = 'world';
+
+
+
+        return \`
+
+<h1>Hello \${name.toUpperCase()}!</h1>
+\`
+      }
+      "
+`;
+
+exports[`test all 3`] = `
+"
+      // file: examples/01-introduction/03-dynamic-attributes/App.html
+      function App() {
+        
+	let src = '/tutorial/image.gif';
+	let name = 'Rick Astley';
+
+
+
+        return \`
+
+<img \${{src}} alt=\\"\${name} dances.\\">
+\`
+      }
+      "
+`;
+
+exports[`test all 4`] = `
+"
+      // file: examples/01-introduction/04-styling/App.html
+      function App() {
+        
+
+        return \`<p>This is a paragraph.</p>
+
+<style>
+	p {
+		color: purple;
+		font-family: 'Comic Sans MS', cursive;
+		font-size: 2em;
+	}
+</style>
+\`
+      }
+      "
+`;
