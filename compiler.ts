@@ -1,7 +1,7 @@
 let RE =
   /<script([^]*?)>([^]*?)<\/script\s*>|<style([^]*?)>([^]*?)<\/style\s*>/g;
 
-export function compiler(source: string) {
+export function compiler(source: string, id = Math.random().toString(36).slice(2)) {
   let server = "";
   let style = "";
   let html = source.replace(RE, (_, $1, $2, $3, $4) => {
@@ -11,6 +11,7 @@ export function compiler(source: string) {
       style += $4;
     return "";
   });
+  style.replace(/(?:\\,|[^,])+/g, selector => selector.replace(/(?<!\\)(?=\.)|$/, '.' + id));
   return { server, html, style };
 }
 
