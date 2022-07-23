@@ -11,7 +11,8 @@ export function compiler(source: string, id = Math.random().toString(36).slice(2
       style += $4;
     return "";
   });
-  style.replace(/(?:\\,|[^,])+/g, selector => selector.replace(/(?<!\\)(?=\.)|$/, '.' + id));
+  style = style.replace(/(?:\\,|[^,])+/g, selector => selector.replace(/(?<!\\)(?=\.)|$/, '.' + id));
+  html = html.replace(/<[^\s<>]+/g, `class="${id}"`)
   return { server, html, style };
 }
 
