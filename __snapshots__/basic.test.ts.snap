@@ -8,7 +8,7 @@ js   =
 ------------------------------
 css  = 
 ------------------------------
-html = class=\\"lvudlntyf6k\\">Hello World!class=\\"lvudlntyf6k\\">
+html = <h1 class=\\"i1b53p6umu\\">Hello World!</h1 class=\\"i1b53p6umu\\">
 
 "
 `;
@@ -26,7 +26,7 @@ css  =
 ------------------------------
 html = 
 
-class=\\"4jd8n40uhgp\\">Hello \${name.toUpperCase()}!class=\\"4jd8n40uhgp\\">
+<h1 class=\\"rwlah02f15\\">Hello \${name.toUpperCase()}!</h1 class=\\"rwlah02f15\\">
 
 "
 `;
@@ -45,7 +45,7 @@ css  =
 ------------------------------
 html = 
 
-class=\\"fmikm0roolj\\" \${{src}} alt=\\"\${name} dances.\\">
+<img class=\\"iwzx6n08oi\\" \${{src}} alt=\\"\${name} dances.\\">
 
 "
 `;
@@ -57,14 +57,14 @@ exports[`test all 4`] = `
 js   = 
 ------------------------------
 css  = 
-	p {
+	p.l6oqt4q7he 
 		color: purple;
-		font-family: 'Comic Sans MS'.efwx087582, cursive;
+		font-family: 'Comic Sans MS', cursive;
 		font-size: 2em;
 	}
-.efwx087582
+
 ------------------------------
-html = class=\\"efwx087582\\">This is a paragraph.class=\\"efwx087582\\">
+html = <p class=\\"l6oqt4q7he\\">This is a paragraph.</p class=\\"l6oqt4q7he\\">
 
 
 
