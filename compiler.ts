@@ -17,7 +17,7 @@ export function compiler(
     (_, selectors: string) =>
       selectors.replace(/(?:\\,|[^,])+/g, (selector) =>
         selector.replace(/(\\\.|[^\s\.])+/, `$&.${id}`)
-      ) + "}"
+      ) + "{"
   );
   html = html.replace(/<[^\/\s<>]+/g, `$& class="${id}"`);
   return { server, html, style };
