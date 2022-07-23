@@ -9,11 +9,11 @@ describe('test', () => {
       expect(`
 // file: ${file}
 ------------------------------
-js   = ${server}
+js   = ${server.replace(/"/g, "’")}
 ------------------------------
-css  = ${style}
+css  = ${style.replace(/"/g, "’")}
 ------------------------------
-html = ${html}
+html = ${html.replace(/"/g, "’")}
 `).toMatchSnapshot()
     })
   })
