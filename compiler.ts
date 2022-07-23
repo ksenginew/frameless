@@ -12,12 +12,14 @@ export function compiler(
     if ($4) style += $4;
     return "";
   });
-  style = style.replace(/([^;}{]*? *){/g, (_, selectors: string) =>
-    selectors.replace(/(?:\\,|[^,])+/g, (selector) =>
-      selector.replace(/(\\\.|[^\s\.])+/, `$&.${id}`)
-    )
+  style = style.replace(
+    /([^;}{]*? *){/g,
+    (_, selectors: string) =>
+      selectors.replace(/(?:\\,|[^,])+/g, (selector) =>
+        selector.replace(/(\\\.|[^\s\.])+/, `$&.${id}`)
+      ) + "}"
   );
-  html = html.replace(/<[^\s<>]+/g, `$& class="${id}"`);
+  html = html.replace(/<[^\/\s<>]+/g, `$& class="${id}"`);
   return { server, html, style };
 }
 
