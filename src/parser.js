@@ -230,3 +230,10 @@ export function parse(input) {
   return nodes;
 }
 
+console.log(parse(`
+    <p>
+      {Date()}
+      <br><br><br><br>
+      {Math.random()}
+    </p>
+`))

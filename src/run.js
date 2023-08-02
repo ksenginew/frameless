@@ -5,6 +5,7 @@ import { platform } from "os";
 import vm from "vm";
 import { transform as sucrase } from "sucrase";
 import { fileURLToPath } from "url";
+import { compile } from "./ssr.js";
 
 const isWindows = platform() === "win32";
 
@@ -28,7 +29,7 @@ export function createRuntime(file = process.cwd(), parentModule) {
   function tryResolve(id, options) {
     try {
       return nativeRequire.resolve(id, options);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   /**
@@ -122,14 +123,16 @@ export function createRuntime(file = process.cwd(), parentModule) {
       ext = extname(filename);
 
       // Unknown format
-      if (ext && !/\.[mc]?[jt]sx?/.test(ext)) return nativeRequire(id);
+      if (ext && !/\.html?/.test(ext)) return nativeRequire(id);
 
       // Read source
       source = readFileSync(filename, "utf-8");
     }
 
     // Transpile
-    const isTypescript = /\.[mc]?tsx?/.test(ext);
+    const isTypescript = false
+    let { html, script } = compile(source)
+    source = `export default function () {${script};return\`${html}\`}`
     source = transform(source, filename, isTypescript);
 
     // Compile module
