@@ -40,17 +40,15 @@ export function is_svg(name) {
 export function parse(input) {
   let index = 0;
   /** @type {import("./types").Element} */
-  let root = { type: "element", name: "", data: [], attrs: {} };
+  // @ts-ignore
+  let root = { data: [] };
   /** @type {import("./types").Element[]} */
   let stack = [root];
-  /**
-   * @type {import("./types").NodeLike[]}
-   */
+  /** @type {import("./types").NodeLike[]} */
   let nodes = [root];
-  /**
-   * @param {RegExp} re
-   */
-  function match(re) {
+
+  /** @param {RegExp} re */
+  let match = (re) => {
     let m = input.slice(index).match(re);
     if (m) {
       index += m[0].length
@@ -58,26 +56,27 @@ export function parse(input) {
     }
   }
 
-  function text() {
+  let finishNode = (/** @type {import("./types").NodeLike} */ node) => {
+    node.end = index
+    stack[0].data?.push(nodes.push(node))
+  }
+
+  let text = () => {
+    let start = index
     let data = match(/^[^<{]+/);
     if (data) {
       let text = data[0].trim();
-      if (text)
-        // @ts-ignore
-        stack[0].data.push(
-          nodes.push(
-            /** @type {import("./types").Text} */({
-              type: "text",
-              data: text.replace(/\s\s+/g, ""),
-            }),
-          ),
-        );
+      if (text) finishNode(/** @type {import("./types").Text} */({
+        type: "text",
+        data: text.replace(/\s\s+/g, ""),
+        start
+      }))
     }
     fragment();
   }
 
-  let bracket = (/** @type {string} */ start, /** @type {string} */ end) => {
-    if (input[index] == start) {
+  let bracket = (/** @type {string | undefined} */ start, /** @type {string} */ end) => {
+    if (!start || input[index] == start) {
       index++;
       let value = "";
       while (input[index] !== end) {
@@ -93,18 +92,15 @@ export function parse(input) {
     }
   };
 
-  function template() {
+  let template = () => {
     let data = bracket("{", "}");
     if (data)
-      // @ts-ignore
-      stack[0].data.push(
-        nodes.push(
+      finishNode(
           /** @type {import("./types").Template} */({
-            type: "template",
-            data: data.slice(1, -1),
-          }),
-        ),
-      );
+          type: "template",
+          data: data.slice(1, -1),
+        }),
+      )
     fragment();
   }
 
@@ -120,14 +116,12 @@ export function parse(input) {
     let data = match(/^-?-?([^]*?)-?-?>/);
     if (!data) throw Error("unclosed comment");
     // @ts-ignore
-    stack[0].data.push(
-      nodes.push(
+    finishNode(
         /** @type {import("./types").Comment} */({
           type: "comment",
           data: data[0],
         }),
-      ),
-    );
+      )
     fragment();
   };
 
@@ -199,8 +193,7 @@ export function parse(input) {
     ) {
       let data = match(new RegExp(`^([^]*?)<\/${tag_name}\s*>`));
       if (!data) throw Error("unclosed script tag");
-      // @ts-ignore
-      stack[0].data.push(nodes.push(tag));
+      finishNode(tag)
       // @ts-ignore
       tag.data.push(
         nodes.push(
@@ -211,8 +204,7 @@ export function parse(input) {
         ),
       );
     } else {
-      // @ts-ignore
-      stack[0].data.push(nodes.push(tag));
+      finishNode(tag)
       stack.unshift(tag);
     }
     fragment();

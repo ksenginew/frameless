@@ -1,5 +1,7 @@
 export interface Node {
   type: string;
+  start: number
+  end: number
 }
 
 export interface Comment extends Node {
