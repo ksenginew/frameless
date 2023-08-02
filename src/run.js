@@ -5,14 +5,14 @@ import { platform } from "os";
 import vm from "vm";
 import { transform as sucrase } from "sucrase";
 import { fileURLToPath } from "url";
-import { compile } from "./ssr.js";
 
 const isWindows = platform() === "win32";
 
 /**
  * @param {import("module")} [parentModule]
+ * @param {(src: string, id: string) => string} compiler
  */
-export function createRuntime(file = process.cwd(), parentModule) {
+export function createRuntime(compiler, file = process.cwd(), parentModule) {
   // If file is dir, createRequire goes with parent directory, so we need fakepath
   if (lstatSync(file).isDirectory()) file = join(file, "index.js");
 
@@ -131,8 +131,7 @@ export function createRuntime(file = process.cwd(), parentModule) {
 
     // Transpile
     const isTypescript = false
-    let { html, script } = compile(source)
-    source = `export default function () {${script};return\`${html}\`}`
+    source = compiler(source, filename)
     source = transform(source, filename, isTypescript);
 
     // Compile module
@@ -145,7 +144,7 @@ export function createRuntime(file = process.cwd(), parentModule) {
     )
       parentModule.children.push(mod);
 
-    mod.require = createRuntime(filename, mod);
+    mod.require = createRuntime(compiler, filename, mod);
 
     mod.path = dirname(filename);
 
