@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/node": "^20.4.0",
     "http-server": "^14.1.1",
+    "sucrase": "^3.34.0",
     "typescript": "^5.1.6"
   }
 }
