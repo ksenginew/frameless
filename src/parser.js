@@ -51,9 +51,9 @@ export function parse(input) {
    * @param {RegExp} re
    */
   function match(re) {
-    let m = input.match(re);
+    let m = input.slice(index).match(re);
     if (m) {
-      input = input.slice(m[0].length);
+      index += m[0].length
       return m;
     }
   }
@@ -66,7 +66,7 @@ export function parse(input) {
         // @ts-ignore
         stack[0].data.push(
           nodes.push(
-            /** @type {import("./types").Text} */ ({
+            /** @type {import("./types").Text} */({
               type: "text",
               data: text.replace(/\s\s+/g, ""),
             }),
@@ -82,14 +82,14 @@ export function parse(input) {
       let value = "";
       while (input[index] !== end) {
         value +=
-          match(/^\[^[({}\])]+/)?.[0] ||
+          match(/^[^[({}\])]+/)?.[0] ||
           bracket("{", "}") ||
           bracket("[", "]") ||
           bracket("(", ")") ||
           string();
       }
       index++;
-      return value;
+      return start + value + end;
     }
   };
 
@@ -97,11 +97,11 @@ export function parse(input) {
     let data = bracket("{", "}");
     if (data)
       // @ts-ignore
-      return stack[0].data.push(
+      stack[0].data.push(
         nodes.push(
-          /** @type {import("./types").Template} */ ({
+          /** @type {import("./types").Template} */({
             type: "template",
-            data,
+            data: data.slice(1, -1),
           }),
         ),
       );
@@ -122,7 +122,7 @@ export function parse(input) {
     // @ts-ignore
     stack[0].data.push(
       nodes.push(
-        /** @type {import("./types").Comment} */ ({
+        /** @type {import("./types").Comment} */({
           type: "comment",
           data: data[0],
         }),
@@ -142,7 +142,7 @@ export function parse(input) {
         let data = bracket("{", "}");
         if (data) attributes[attr_name] = { type: "template", data };
         else {
-          let value = string() || match(/^[^\s\/>]+/)?.[0] || template();
+          let value = string() || match(/^[^\s\/>]+/)?.[0]
           if (!value) throw Error;
           attributes[attr_name] = value;
         }
@@ -204,7 +204,7 @@ export function parse(input) {
       // @ts-ignore
       tag.data.push(
         nodes.push(
-          /** @type {import("./types").Text} */ ({
+          /** @type {import("./types").Text} */({
             type: "text",
             data: data[1],
           }),
@@ -221,7 +221,7 @@ export function parse(input) {
   function fragment() {
     if (input.length > index)
       if (match(/^</)) element();
-      else if (match(/^{/)) template();
+      else if (input[index] == '{') template();
       else text();
   }
 
@@ -229,3 +229,4 @@ export function parse(input) {
 
   return nodes;
 }
+

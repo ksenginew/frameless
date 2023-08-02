@@ -13,7 +13,7 @@ export let stringify = (
           return "";
 
         case "text":
-          return node.data.replace(/[`$]/g, "\\$0");
+          return node.data.replace(/[`$]/g, "\\$&");
 
         case "template":
           return "${" + node.data + "}";
@@ -27,7 +27,7 @@ export let stringify = (
             if (typeof value !== "undefined") {
               result += "=";
               if (typeof value == "object") result += "${" + value.data + "}";
-              else result += JSON.stringify(value);
+              else result += JSON.stringify(value).replace(/[`$]/g, "\\$&");
             }
           }
           result += ">";
@@ -58,9 +58,7 @@ console.log(
 
 <body bg="red">
     <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, dolore aperiam! Corrupti neque quasi
-        doloremque quaerat qui explicabo laborum eum quidem adipisci temporibus? Laboriosam pariatur vero dolorum
-        accusamus fuga velit.
+        {Date()}{\`\\\`\`}
     </p>
 </body>
 
