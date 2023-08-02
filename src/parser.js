@@ -42,7 +42,7 @@ export function parse(input) {
   /** @type {import("./types").Element} */
   // @ts-ignore
   let root = { data: [] };
-  /** @type {import("./types").Element[]} */
+  /** @type {{data: number[]}[]} */
   let stack = [root];
   /** @type {import("./types").NodeLike[]} */
   let nodes = [root];
@@ -118,10 +118,10 @@ export function parse(input) {
     // @ts-ignore
     finishNode(
         /** @type {import("./types").Comment} */({
-          type: "comment",
-          data: data[0],
-        }),
-      )
+        type: "comment",
+        data: data[0],
+      }),
+    )
     fragment();
   };
 
@@ -172,13 +172,11 @@ export function parse(input) {
 
     if (!match(/^\s*>/)) throw Error("unclosed tag");
 
-    /** @type {import("./types").Element} */
     let tag = {
       type: "element",
       name: tag_name,
       attrs,
-      // @ts-ignore
-      data: !self_closing && [],
+      data: !self_closing ? [] : undefined,
     };
 
     if (self_closing) {
@@ -194,15 +192,7 @@ export function parse(input) {
       let data = match(new RegExp(`^([^]*?)<\/${tag_name}\s*>`));
       if (!data) throw Error("unclosed script tag");
       finishNode(tag)
-      // @ts-ignore
-      tag.data.push(
-        nodes.push(
-          /** @type {import("./types").Text} */({
-            type: "text",
-            data: data[1],
-          }),
-        ),
-      );
+      tag.data = data[1]
     } else {
       finishNode(tag)
       stack.unshift(tag);

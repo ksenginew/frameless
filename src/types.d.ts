@@ -14,15 +14,28 @@ export interface Text extends Node {
   data: string;
 }
 
+export interface Raw extends Node {
+  type: "raw";
+  data: string;
+}
+
 export interface Template extends Node {
   type: "template";
   data: string;
 }
 
-export interface Element extends Node {
+export interface VoidElement extends Node {
   type: "element";
-  data?: number[];
   name: string;
+  attrs: Record<string, string | Template | undefined>;
+}
+
+export interface ContentElement extends VoidElement {
+  data: string
+}
+
+export interface Element extends VoidElement {
+  data: number[];
   attrs: Record<string, string | Template | undefined>;
 }
 
