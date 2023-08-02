@@ -5,6 +5,9 @@ import polka from 'polka';
 import sirv from 'sirv';
 import { dirname, normalize, resolve, sep } from "path";
 import { createRuntime } from "./run.js";
+import { WebSocket, WebSocketServer } from 'ws';
+import { parse } from "./parser.js";
+import { stringify } from "./ssr.js";
 
 /**
  * @param {string} filePath
@@ -43,10 +46,27 @@ function dev(file) {
             fsWait = true;
             setTimeout(() => {
                 build("." + sep + normalize(file));
+                WS.send(JSON.stringify({t:0}))
                 fsWait = false;
             }, 100);
         }
     });
+}
+
+/**
+ * @param {string} src
+ * @param {string} id
+ */
+function compiler(src, id) {
+    let [root, ...nodes] = parse(src);
+    let body = nodes.findIndex(node=>node.type=='element'&&node.name == 'body')
+    if(body!==-1){
+        nodes[body].data.unshift(nodes.push({type:'text',data:`<script></script>`}))
+    }
+    // @ts-ignore
+    let html = stringify(root.data, nodes);
+    let script = nodes.filter(node=>node.type=='element' && node.name=='script').map(node=>node.data).join('')
+    return `export default function(){${script};return\`${html}\`}`
 }
 
 let argv = minimist(process.argv.slice(2), {
@@ -60,6 +80,23 @@ polka()
     .listen(3000, () => {
         console.log(`> Running on localhost:3000`);
     });
-let runtime = createRuntime()
+
+let runtime = createRuntime(compiler)
 build('./index.html')
-dev('./index.html')
+
+
+const wss = new WebSocketServer({ port: 3001 });
+/** @type {WebSocket} */
+let WS;
+wss.on('connection', function connection(ws) {
+  ws.on('error', console.error);
+
+  dev('./index.html')
+
+  ws.on('message', function message(data) {
+    console.log('received: %s', data);
+  });
+  WS=ws
+});
+
+
