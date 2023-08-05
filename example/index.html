@@ -1,14 +1,17 @@
 <!doctype html>
 <html>
-  <head>
-    <title></title>
-  </head>
 
-  <body>
-    <p>
-      {Date()}{` `}
-      <br><br><br><br>
-      {Math.random()}
-    </p>
-  </body>
+<head>
+  <title></title>
+</head>
+
+<body>
+  <script>
+	import Nested from './Nested.html';
+  </script>
+
+  <p>This is a paragraph.</p>
+  <Nested answer={50} />
+</body>
+
 </html>

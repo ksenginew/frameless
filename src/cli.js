@@ -9,6 +9,19 @@ import { WebSocket, WebSocketServer } from 'ws';
 import { parse } from "./parser.js";
 import { stringify } from "./ssr.js";
 
+const client_code = `
+const socket = new WebSocket("ws://localhost:3001");
+
+socket.addEventListener("open", (event) => {
+});
+
+socket.addEventListener("message", (event) => {
+  try{
+    let json = JSON.parse(event.data)
+    if(json.t == 0) location.reload();
+  } catch {}
+});
+`
 /**
  * @param {string} filePath
  */
@@ -46,7 +59,7 @@ function dev(file) {
             fsWait = true;
             setTimeout(() => {
                 build("." + sep + normalize(file));
-                WS.send(JSON.stringify({t:0}))
+                clients.forEach(ws => ws.send(JSON.stringify({ t: 0 })))
                 fsWait = false;
             }, 100);
         }
@@ -59,14 +72,14 @@ function dev(file) {
  */
 function compiler(src, id) {
     let [root, ...nodes] = parse(src);
-    let body = nodes.findIndex(node=>node.type=='element'&&node.name == 'body')
-    if(body!==-1){
-        nodes[body].data.unshift(nodes.push({type:'text',data:`<script></script>`}))
+    let body = nodes.findIndex(node => node.type == 'element' && node.name == 'body')
+    if (body !== -1) {
+        nodes[body].data.unshift(nodes.push({ type: 'text', data: `<script>${client_code}</script>` })+1)
     }
     // @ts-ignore
     let html = stringify(root.data, nodes);
-    let script = nodes.filter(node=>node.type=='element' && node.name=='script').map(node=>node.data).join('')
-    return `export default function(){${script};return\`${html}\`}`
+    let script = nodes.filter(node => node.type == 'element' && node.name == 'script' && node.attrs.type=="static").map(node => node.data).join('')
+    return `export default function({props}={}){${script};return\`${html}\`}`
 }
 
 let argv = minimist(process.argv.slice(2), {
@@ -78,7 +91,7 @@ ensureDir('.build/index.html')
 polka()
     .use(sirv('./.build'))
     .listen(3000, () => {
-        console.log(`> Running on localhost:3000`);
+        console.info(`> Running on localhost:3000`);
     });
 
 let runtime = createRuntime(compiler)
@@ -86,17 +99,18 @@ build('./index.html')
 
 
 const wss = new WebSocketServer({ port: 3001 });
-/** @type {WebSocket} */
-let WS;
+/** @type {WebSocket[]} */
+let clients = []
 wss.on('connection', function connection(ws) {
-  ws.on('error', console.error);
+    ws.on('error', console.error);
 
-  dev('./index.html')
+    ws.on('message', function message(data) {
+        console.log('received: %s', data);
+    });
 
-  ws.on('message', function message(data) {
-    console.log('received: %s', data);
-  });
-  WS=ws
+    clients.push(ws)
 });
+dev('./index.html')
+
 
 

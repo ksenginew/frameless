@@ -65,7 +65,7 @@ export function parse(input) {
     let start = index
     let data = match(/^[^<{]+/);
     if (data) {
-      let text = data[0].trim();
+      let text = data[0].replace(/\s\s+/g, '');
       if (text) finishNode(/** @type {import("./types").Text} */({
         type: "text",
         data: text.replace(/\s\s+/g, ""),
@@ -128,13 +128,19 @@ export function parse(input) {
   let parse_attrs = () => {
     /** @type {Record<string, string | import("./types").Template | undefined>} */
     let attributes = {};
-    while (true) {
-      let attr_name = match(/^\s+([^\s\/>=]+)/)?.[1];
+    while (match(/^\s+/)) {
+      let data = bracket("{", "}");
+      if (data) {
+        let content = (data.slice(1, -1))
+        attributes[content] = content;
+        continue
+      }
+      let attr_name = match(/^[^\s\/>=]+/)?.[0];
       if (!attr_name) break;
       let assign = match(/^\s*=\s*/)?.[0];
       if (assign) {
         let data = bracket("{", "}");
-        if (data) attributes[attr_name] = { type: "template", data };
+        if (data) attributes[attr_name] = { type: "template", data: data.slice(1, -1) };
         else {
           let value = string() || match(/^[^\s\/>]+/)?.[0]
           if (!value) throw Error;
@@ -173,7 +179,7 @@ export function parse(input) {
     if (!match(/^\s*>/)) throw Error("unclosed tag");
 
     let tag = {
-      type: "element",
+      type: /^[A-Z]|-/.test(tag_name) ? "component" : "element",
       name: tag_name,
       attrs,
       data: !self_closing ? [] : undefined,
@@ -212,10 +218,8 @@ export function parse(input) {
   return nodes;
 }
 
-console.log(parse(`
-    <p>
-      {Date()}
-      <br><br><br><br>
-      {Math.random()}
-    </p>
-`))
+// console.log(parse(`
+//     <p>
+//     <img src={src} />
+//     </p>
+// `)[2])

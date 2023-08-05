@@ -1,0 +1,17 @@
+
+<html><head><title></title>
+</head><body><script>
+const socket = new WebSocket("ws://localhost:3001");
+
+socket.addEventListener("open", (event) => {
+});
+
+socket.addEventListener("message", (event) => {
+  try{
+    let json = JSON.parse(event.data)
+    if(json.t == 0) location.reload();
+  } catch {}
+});
+</script><p>This is a paragraph.</p><p>The assnswer is 50</p>
+
+</body></html>

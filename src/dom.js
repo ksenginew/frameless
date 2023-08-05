@@ -7,7 +7,6 @@ export let stringify = (
     return data
         .map((index) => {
             let node = nodes[index - 2];
-            if (!node) console.log(index, data, nodes);
             switch (node.type) {
                 case "comment":
                     return "";
