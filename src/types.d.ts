@@ -1,7 +1,7 @@
 export interface Node {
   type: string;
-  start: number
-  end: number
+  start: number;
+  end: number;
 }
 
 export interface Comment extends Node {
@@ -31,7 +31,7 @@ export interface VoidElement extends Node {
 }
 
 export interface ContentElement extends VoidElement {
-  data: string
+  data: string;
 }
 
 export interface Element extends VoidElement {

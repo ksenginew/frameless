@@ -1,8 +1,11 @@
 import { createRuntime } from "./run.js";
 
-let runtime = createRuntime()
+let runtime = createRuntime();
 
-console.log(runtime(process.cwd(),`
+console.log(
+  runtime(
+    process.cwd(),
+    `
 <!DOCTYPE html>
 <html>
 
@@ -17,4 +20,6 @@ console.log(runtime(process.cwd(),`
 </body>
 
 </html>
-`).default())
+`,
+  ).default(),
+);

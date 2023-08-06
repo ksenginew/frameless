@@ -29,7 +29,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
   function tryResolve(id, options) {
     try {
       return nativeRequire.resolve(id, options);
-    } catch (e) { }
+    } catch (e) {}
   }
 
   /**
@@ -130,8 +130,8 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
     }
 
     // Transpile
-    const isTypescript = false
-    source = compiler(source, filename)
+    const isTypescript = false;
+    source = compiler(source, filename);
     source = transform(source, filename, isTypescript);
 
     // Compile module

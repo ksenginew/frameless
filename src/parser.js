@@ -42,7 +42,7 @@ export function parse(input) {
   /** @type {import("./types").Element} */
   // @ts-ignore
   let root = { data: [] };
-  /** @type {{data: number[]}[]} */
+  /** @type {{name: string, data: number[]}[]} */
   let stack = [root];
   /** @type {import("./types").NodeLike[]} */
   let nodes = [root];
@@ -51,31 +51,37 @@ export function parse(input) {
   let match = (re) => {
     let m = input.slice(index).match(re);
     if (m) {
-      index += m[0].length
+      index += m[0].length;
       return m;
     }
-  }
+  };
 
   let finishNode = (/** @type {import("./types").NodeLike} */ node) => {
-    node.end = index
-    stack[0].data?.push(nodes.push(node))
-  }
+    node.end = index;
+    stack[0].data?.push(nodes.push(node));
+  };
 
   let text = () => {
-    let start = index
+    let start = index;
     let data = match(/^[^<{]+/);
     if (data) {
-      let text = data[0].replace(/\s\s+/g, '');
-      if (text) finishNode(/** @type {import("./types").Text} */({
-        type: "text",
-        data: text.replace(/\s\s+/g, ""),
-        start
-      }))
+      let text = data[0].replace(/\s\s+/g, "");
+      if (text)
+        finishNode(
+          /** @type {import("./types").Text} */ ({
+            type: "text",
+            data: text.replace(/\s\s+/g, ""),
+            start,
+          }),
+        );
     }
     fragment();
-  }
+  };
 
-  let bracket = (/** @type {string | undefined} */ start, /** @type {string} */ end) => {
+  let bracket = (
+    /** @type {string | undefined} */ start,
+    /** @type {string} */ end,
+  ) => {
     if (!start || input[index] == start) {
       index++;
       let value = "";
@@ -92,17 +98,23 @@ export function parse(input) {
     }
   };
 
-  let template = () => {
+  let parse_template = () => {
+    let start = index;
     let data = bracket("{", "}");
     if (data)
-      finishNode(
-          /** @type {import("./types").Template} */({
-          type: "template",
-          data: data.slice(1, -1),
-        }),
-      )
+      return /** @type {import("./types").Template} */ ({
+        type: "template",
+        data: data.slice(1, -1),
+        start,
+        end: index,
+      });
+  };
+  let template = () => {
+    let start = index;
+    let data = parse_template();
+    if (data) finishNode(data);
     fragment();
-  }
+  };
 
   let string = () => {
     let m = match(/^"(\\"|[^"])*"/) || match(/^'(\\'|[^'])*'/);
@@ -113,15 +125,16 @@ export function parse(input) {
   };
 
   let comment = () => {
+    let start = index;
     let data = match(/^-?-?([^]*?)-?-?>/);
     if (!data) throw Error("unclosed comment");
-    // @ts-ignore
     finishNode(
-        /** @type {import("./types").Comment} */({
+      /** @type {import("./types").Comment} */ ({
         type: "comment",
         data: data[0],
+        start,
       }),
-    )
+    );
     fragment();
   };
 
@@ -129,20 +142,19 @@ export function parse(input) {
     /** @type {Record<string, string | import("./types").Template | undefined>} */
     let attributes = {};
     while (match(/^\s+/)) {
-      let data = bracket("{", "}");
+      let data = parse_template();
       if (data) {
-        let content = (data.slice(1, -1))
-        attributes[content] = content;
-        continue
+        attributes[data.data] = data.data;
+        continue;
       }
       let attr_name = match(/^[^\s\/>=]+/)?.[0];
       if (!attr_name) break;
       let assign = match(/^\s*=\s*/)?.[0];
       if (assign) {
-        let data = bracket("{", "}");
-        if (data) attributes[attr_name] = { type: "template", data: data.slice(1, -1) };
+        let data = parse_template();
+        if (data) attributes[attr_name] = data;
         else {
-          let value = string() || match(/^[^\s\/>]+/)?.[0]
+          let value = string() || match(/^[^\s\/>]+/)?.[0];
           if (!value) throw Error;
           attributes[attr_name] = value;
         }
@@ -158,16 +170,13 @@ export function parse(input) {
     let tag_name = match(/^[^\s\/>]*/)?.[0] || "";
 
     if (is_closing) {
-      if (is_void(tag_name)) {
-        throw Error("bad void element");
-      }
+      if (is_void(tag_name)) throw Error("bad void element");
+
       if (!match(/^\s*>/)) throw Error("unclosed tag");
 
-      while (stack[0].name !== tag_name) {
-        stack.shift();
-      }
-      let el = stack.shift();
-      if (!el) throw Error();
+      while (stack[0].name !== tag_name) stack.shift();
+
+      stack.shift();
       fragment();
       return;
     }
@@ -179,7 +188,7 @@ export function parse(input) {
     if (!match(/^\s*>/)) throw Error("unclosed tag");
 
     let tag = {
-      type: /^[A-Z]|-/.test(tag_name) ? "component" : "element",
+      type: "element",
       name: tag_name,
       attrs,
       data: !self_closing ? [] : undefined,
@@ -197,10 +206,14 @@ export function parse(input) {
     ) {
       let data = match(new RegExp(`^([^]*?)<\/${tag_name}\s*>`));
       if (!data) throw Error("unclosed script tag");
-      finishNode(tag)
-      tag.data = data[1]
+      // @ts-ignore
+      finishNode(tag);
+      // @ts-ignore
+      tag.data = data[1];
     } else {
-      finishNode(tag)
+      // @ts-ignore
+      finishNode(tag);
+      // @ts-ignore
       stack.unshift(tag);
     }
     fragment();
@@ -209,7 +222,7 @@ export function parse(input) {
   function fragment() {
     if (input.length > index)
       if (match(/^</)) element();
-      else if (input[index] == '{') template();
+      else if (input[index] == "{") template();
       else text();
   }
 

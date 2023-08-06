@@ -17,20 +17,25 @@ export let stringify = (
         case "template":
           return "${" + node.data + "}";
 
-        case "component":
-          debugger
-          let props = []
-          for (const attr in node.attrs) {
-            let value = node.attrs[attr];
-            let attr_name = JSON.stringify(attr)
-              if (typeof value == "object") props.push(attr_name+':'+value.data)
-              else if (typeof value !== "undefined") props.push(attr_name+':'+JSON.stringify(value))
-              else props.push(attr_name+':true')
-          }
-          return `\${${node.name}({props:{${props}},slots:{${node.data?'_:'+JSON.stringify(stringify(node.data, nodes)):''}}})}`;
-
         case "element":
-          if (node.name == 'script') return ''
+          if (node.name == "script") return "";
+          if (/^[A-Z]/.test(node.name)) {
+            let props = [];
+            for (const attr in node.attrs) {
+              let value = node.attrs[attr];
+              let attr_name = JSON.stringify(attr);
+              if (typeof value == "object")
+                props.push(attr_name + ":" + value.data);
+              else if (typeof value !== "undefined")
+                props.push(attr_name + ":" + JSON.stringify(value));
+              else props.push(attr_name + ":true");
+            }
+            return `\${${node.name}({props:{${props}},slots:{${
+              node.data
+                ? "_:" + JSON.stringify(stringify(node.data, nodes))
+                : ""
+            }}})}`;
+          }
           let result = "<" + node.name;
           for (const attr in node.attrs) {
             let value = node.attrs[attr];
@@ -42,7 +47,8 @@ export let stringify = (
             }
           }
           if (node.data) {
-            result += ">" + stringify(node.data, nodes) + "</" + node.name + ">";
+            result +=
+              ">" + stringify(node.data, nodes) + "</" + node.name + ">";
           } else result += "/>";
           return result;
       }
@@ -54,6 +60,9 @@ export let compile = (/** @type {string} */ src) => {
   let [root, ...nodes] = parse(src);
   // @ts-ignore
   let html = stringify(root.data, nodes);
-  let script = nodes.filter(node => node.type == 'element' && node.name == 'script').map(node => node.data).join('')
-  return { html, script }
+  let script = nodes
+    .filter((node) => node.type == "element" && node.name == "script")
+    .map((node) => node.data)
+    .join("");
+  return { html, script };
 };
