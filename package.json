@@ -22,5 +22,9 @@
     "sucrase": "^3.34.0",
     "typescript": "^5.1.6",
     "ws": "^8.13.0"
+  },
+  "dependencies": {
+    "parse5": "^7.1.2",
+    "vhtml": "^2.2.0"
   }
 }

@@ -29,7 +29,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
   function tryResolve(id, options) {
     try {
       return nativeRequire.resolve(id, options);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   /**
@@ -80,13 +80,16 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
    */
   function transform(source, filePath, ts) {
     /** @type {import("sucrase").Transform[]} */
-    const transforms = ["imports"];
+    const transforms = ["imports", "jsx"];
 
     if (ts) transforms.push("typescript");
 
     let transformed = sucrase(source, {
       filePath,
       transforms,
+      jsxRuntime: "classic",
+      jsxImportSource: "vhtml",
+      jsxPragma: "h"
     });
     let code = transformed.code;
 

@@ -10,6 +10,7 @@ import { WebSocket, WebSocketServer } from "ws";
 import { parse } from "./parser.js";
 import { stringify } from "./ssr.js";
 import posix from "path/posix";
+import { transform as sucrase } from "sucrase";
 
 const client_code = `
 const socket = new WebSocket("ws://localhost:3001");
@@ -68,33 +69,6 @@ function dev(file) {
   });
 }
 
-/**
- * @param {string} src
- * @param {string} id
- */
-function compiler(src, id) {
-  let [root, ...nodes] = parse(src);
-  let body = nodes.findIndex(
-    (node) => node.type == "element" && node.name == "body",
-  );
-  if (body !== -1) {
-    nodes[body].data.unshift(
-      nodes.push({ type: "text", data: `<script>${client_code}</script>` }) + 1,
-    );
-  }
-  // @ts-ignore
-  let html = stringify(root.data, nodes);
-  let script = nodes
-    .filter(
-      (node) =>
-        node.type == "element" &&
-        node.name == "script" &&
-        node.attrs.type == "static",
-    )
-    .map((node) => node.data)
-    .join("");
-  return `export default function({props}={}){${script};return\`${html}\`}`;
-}
 
 let argv = minimist(process.argv.slice(2), {
   default: {
@@ -103,39 +77,8 @@ let argv = minimist(process.argv.slice(2), {
 });
 ensureDir(".build/index.html");
 let root = process.cwd();
-
-/** @type {Record<string, string>} */
-let cache = {};
-
-/**
- * @param {string} src
- */
-function transformHtml(src) {
-  let [root, ...nodes] = parse(src);
-  let body = nodes.findIndex(
-    (node) => node.type == "element" && node.name == "body",
-  );
-  if (body !== -1) {
-    nodes[body].data.unshift(
-      nodes.push({ type: "text", data: `<script>${client_code}</script>` }) + 1,
-    );
-  }
-  // @ts-ignore
-  let html = stringify(root.data, nodes);
-  let script = nodes
-    .filter(
-      (node) =>
-        node.type == "element" &&
-        node.name == "script" &&
-        node.attrs.type == "static",
-    )
-    .map((node) => node.data)
-    .join("");
-  return `export default function({props}={}){${script};return\`${html}\`}`;
-}
-
 polka()
-  // .use(sirv('./.build'))
+  .use(sirv('./.build'))
   .use(async (req, res, next) => {
     const path = posix.normalize(req.path);
     try {
@@ -146,7 +89,7 @@ polka()
       if (!/\.html?$/.test(index) || !(await fs.stat(index)).isFile())
         return next();
       const html = await fs.readFile(index, "utf-8");
-      const result = transformHtml(html);
+      const result = runtime(path, html)
       const time = Date.now() - start;
       res.writeHead(200, {
         "Content-Type": "text/html;charset=utf-8",
@@ -155,7 +98,6 @@ polka()
       });
       res.end(result);
     } catch (e) {
-      console.log(e);
       next();
     }
   })
@@ -163,6 +105,24 @@ polka()
     console.info(`> Running on localhost:3000`);
   });
 
+const RE = /<script(\s[^]*?)?>([^]*?)<\/script>/g
+/**
+ * @param {string} src
+ * @param {string} id
+ */
+function compiler(src, id) {
+  let js = ''
+  src = src.replace(RE, (_, attr, code) => {
+    js += code;
+    return ''
+  })
+  let transformed = sucrase(js, {
+    filePath: id,
+    transforms: ["imports"]
+  });
+  let code = transformed.code;
+  return `import _h from 'vhtml';let h=(n,a,...c)=>{if(a){delete a.__self;delete a.__source;}return _h(n,a,...c)};export default function App(props){${js};return (${src})}`
+}
 let runtime = createRuntime(compiler);
 build("./index.html");
 
