@@ -1,0 +1,18 @@
+<script>
+
+// interface Props {
+// 	icon: keyof typeof iconPaths;
+// 	color?: string;
+// 	gradient?: boolean;
+// 	size?: string;
+// }
+
+const { color = 'currentcolor', gradient, icon, size } = $.props;
+const iconPath = ""//iconPaths[icon];
+
+const attrs = {};
+if (size) attrs.style = { '--size': size };
+
+const gradientId = 'icon-gradient-' + Math.round(Math.random() * 10e12).toString(36);
+</script>
+<p>hi</p>
