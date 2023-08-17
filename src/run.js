@@ -89,12 +89,13 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
       transforms,
       jsxRuntime: "classic",
       jsxImportSource: "vhtml",
-      jsxPragma: "h"
+      jsxPragma: "h",
     });
     let code = transformed.code;
 
     if (code.startsWith("#!")) code = "// " + code;
 
+    // console.log(filePath,code)
     code = `async ()=>{${code}}`;
 
     return code;

@@ -1,10 +1,9 @@
 import minimist from "minimist";
 // import glob from "glob";
-import { existsSync, mkdirSync, watch, writeFileSync } from "fs";
 import fs from "fs/promises";
 import polka from "polka";
 import sirv from "sirv";
-import { dirname, normalize, resolve, sep, relative } from "path";
+import path from "path";
 import { createRuntime } from "./run.js";
 import { WebSocket, WebSocketServer } from "ws";
 import { parse } from "./parser.js";
@@ -25,71 +24,39 @@ socket.addEventListener("message", (event) => {
   } catch {}
 });
 `;
-/**
- * @param {string} filePath
- */
-function ensureDir(filePath) {
-  var dir = dirname(filePath);
-  if (existsSync(dir)) {
-    return true;
-  }
-  ensureDir(dir);
-  mkdirSync(dir);
-}
 
-/**
- * @param {string} file
- */
-function build(file) {
+/** @param {string} file */
+async function dev(file) {
   try {
-    let output = resolve(argv.o || argv.output, file);
-    ensureDir(output);
-    writeFileSync(output, runtime(file).default(), {});
-    console.info(`Successfully built "${file}"`);
-  } catch (error) {
-    console.info(`Faild to build "${file}"\n`, error);
+    const watcher = fs.watch(file);
+    for await (const event of watcher)
+      if (event.eventType == 'change')
+        clients.forEach((ws) => ws.send(JSON.stringify({ t: 0 })));
+  } catch (err) {
+    throw err;
   }
 }
 
-/**
- * @param {string} file
- */
-function dev(file) {
-  let fsWait = false;
-  watch(file, (event, filename) => {
-    if (filename) {
-      if (fsWait) return;
-      fsWait = true;
-      setTimeout(() => {
-        build("." + sep + normalize(file));
-        clients.forEach((ws) => ws.send(JSON.stringify({ t: 0 })));
-        fsWait = false;
-      }, 100);
-    }
-  });
-}
 
-
-let argv = minimist(process.argv.slice(2), {
-  default: {
-    output: ".build",
-  },
-});
-ensureDir(".build/index.html");
+let argv = minimist(process.argv.slice(2));
 let root = process.cwd();
 polka()
-  .use(sirv('./.build'))
   .use(async (req, res, next) => {
-    const path = posix.normalize(req.path);
+    const filePath = posix.normalize(req.path);
     try {
       const start = Date.now();
-      let index = resolve(root, "." + path);
+      let index = path.resolve(root, "." + filePath);
       if ((await fs.stat(index)).isDirectory())
-        index = resolve(index, "index.html");
+        index = path.resolve(index, "index.html");
       if (!/\.html?$/.test(index) || !(await fs.stat(index)).isFile())
         return next();
-      const html = await fs.readFile(index, "utf-8");
-      const result = runtime(path, html)
+      const fn = runtime(index)
+      let result;
+      try {
+        result = fn.default({})
+      } catch { }
+      result = result.replace(/(?=<head>)/, "<script>" + client_code + "</script>")
+      dev(index)
       const time = Date.now() - start;
       res.writeHead(200, {
         "Content-Type": "text/html;charset=utf-8",
@@ -98,14 +65,16 @@ polka()
       });
       res.end(result);
     } catch (e) {
+      console.log(e)
       next();
     }
   })
+  // .use(sirv())
   .listen(3000, () => {
     console.info(`> Running on localhost:3000`);
   });
 
-const RE = /<script(\s[^]*?)?>([^]*?)<\/script>/g
+const RE = /<!--[^]*?-->|<[!?][^]*?>|<script(\s[^]*?)?>([^]*?)<\/script>/g
 /**
  * @param {string} src
  * @param {string} id
@@ -113,18 +82,14 @@ const RE = /<script(\s[^]*?)?>([^]*?)<\/script>/g
 function compiler(src, id) {
   let js = ''
   src = src.replace(RE, (_, attr, code) => {
-    js += code;
+    if (attr && attr.indexOf("client") !== -1) return _
+    if (code)
+      js += code;
     return ''
-  })
-  let transformed = sucrase(js, {
-    filePath: id,
-    transforms: ["imports"]
-  });
-  let code = transformed.code;
-  return `import _h from 'vhtml';let h=(n,a,...c)=>{if(a){delete a.__self;delete a.__source;}return _h(n,a,...c)};export default function App(props){${js};return (${src})}`
+  }).replace(/<slot\s*\/>/g, "{$.slot}")
+  return `import _h from 'vhtml';const React={Fragment:props=>_h(null,null,...(props.children||[]))};const h=(n,a,...c)=>{if(a){delete a.__self;delete a.__source;}return _h(n,a,...c)};export default function App(_$props){const $={props:_$props, slot: _$props.children};${js};return <>${src}</>}`
 }
 let runtime = createRuntime(compiler);
-build("./index.html");
 
 const wss = new WebSocketServer({ port: 3001 });
 /** @type {WebSocket[]} */
@@ -138,4 +103,3 @@ wss.on("connection", function connection(ws) {
 
   clients.push(ws);
 });
-dev("./index.html");
