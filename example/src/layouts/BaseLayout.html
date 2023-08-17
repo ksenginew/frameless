@@ -1,27 +1,31 @@
 <script>
-// Component Imports
-// import MainHead from '../components/MainHead.html';
-// import Nav from '../components/Nav.html';
-// import Footer from '../components/Footer.html';
+	// Component Imports
+	// import MainHead from '../components/MainHead.html';
+	// import Nav from '../components/Nav.html';
+	// import Footer from '../components/Footer.html';
 
-// interface Props {
-// 	title?: string | undefined;
-// 	description?: string | undefined;
-// }
+	// interface Props {
+	// 	title?: string | undefined;
+	// 	description?: string | undefined;
+	// }
 
-const { title, description } = $.props;
+	const { title, description } = $.props;
 </script>
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<!-- <MainHead title={title} description={description} /> -->
-	</head>
-	<body>
-        <h1>Hello</h1>
-       <main><slot /><slot /></main>
-		<script client>
-			// Add “loaded” class once the document has completely loaded.
-			addEventListener('load', () => document.documentElement.classList.add('loaded'));
-		</script>
-	</body>
+
+<head>
+	<!-- <MainHead title={title} description={description} /> -->
+</head>
+
+<body>
+	<main>
+		<slot />
+	</main>
+	<script client>
+		// Add “loaded” class once the document has completely loaded.
+		addEventListener('load', () => document.documentElement.classList.add('loaded'));
+	</script>
+</body>
+
 </html>

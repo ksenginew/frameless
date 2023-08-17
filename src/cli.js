@@ -50,11 +50,22 @@ polka()
         index = path.resolve(index, "index.html");
       if (!/\.html?$/.test(index) || !(await fs.stat(index)).isFile())
         return next();
+        debugger
       const fn = runtime(index)
       let result;
       try {
         result = fn.default({})
-      } catch { }
+      } catch (e) {
+        result = e + ''
+        const time = Date.now() - start;
+        res.writeHead(500, {
+          "Content-Type": "text/html;charset=utf-8",
+          "Content-Length": Buffer.byteLength(result, "utf-8"),
+          "Server-Timing": `index.html;dur=${time}`,
+        });
+        res.end("<script>" + client_code + "</script>"+result);
+        return
+      }
       result = result.replace(/(?=<head>)/, "<script>" + client_code + "</script>")
       dev(index)
       const time = Date.now() - start;
