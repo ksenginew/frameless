@@ -9,6 +9,17 @@ let map = { '&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', "'": 'apos' };
 /** @type {Record<string,string>} */
 let sanitized = {};
 
+function updateSlots
+/**
+ * @param {import("./types").FrComponent} fn
+ */
+export function create_ssr_component(fn){
+  return ($) =>{
+    let root = fn($)
+    $.slots.forEach()
+  }
+}
+
 /**
  * @param {import("./types").FrElement|import("./types").FrElement[]} element
  * @returns {string}
