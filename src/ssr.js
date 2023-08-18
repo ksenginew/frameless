@@ -12,15 +12,15 @@ let sanitized = {};
 /**
  * @param {string | import("./types").FrElement | (string | import("./types").FrElement | undefined)[] | undefined} children
  * @param {{[x: string]: () => string;}} manager
- * @param {Record<string, () => string>} slots
+ * @param {import("./types").$Context} $
  */
-function findSlots(manager, children, slots) {
+function findSlots(manager, children, $) {
   if (typeof children === 'object')
-    if (Array.isArray(children)) children.forEach(c => findSlots(manager, c, slots))
+    if (Array.isArray(children)) children.forEach(c => findSlots(manager, c, $))
     else if (children.props.slot) {
       let name = children.props.slot
       if (name in manager) throw Error('duplicate slot name `' + name + '`')
-      manager[name] = () => renderToString(children, slots)
+      manager[name] = () => renderToString(children, $)
     }
   return manager
 }
@@ -31,35 +31,40 @@ function findSlots(manager, children, slots) {
 export function create_ssr_component(fn) {
   return (/** @type {import("./types").$Context} */ $) => {
     let root = fn($)
-    return renderToString(root, $.slots)
+    $.results.html = renderToString(root, $)
+    return $.results
   }
 }
 
 /**
  * @param {undefined | import("./types").FrElement | string | (import("./types").FrElement | string | undefined)[]} element
- * @param {Record<string, (() => string)>} slots
  * @returns {string}
+ * @param {import("./types").$Context} $
  */
-export function renderToString(element, slots) {
+export function renderToString(element, $) {
   if (!element) return ""
-  else if (Array.isArray(element)) return element.map(e => renderToString(e, slots)).join('')
+  else if (Array.isArray(element)) return element.map(e => renderToString(e, $)).join('')
   else if (typeof element === "string") return sanitized[element] || (sanitized[element] = esc(element))
-  else if (typeof element.type == "symbol") return renderToString(element.props?.children, slots)
+  else if (typeof element.type == "symbol") return renderToString(element.props?.children, $)
   else if (typeof element.type == "function") {
     let { children, ...args } = element.props
     /** @type {Record<string, () => string>} */
     let manager = {}
-    if (children) manager.default = () => renderToString(children, slots)
+    if (children) manager.default = () => renderToString(children, $)
     /** @type {import("./types").$Context} */
-    let $ = {
+    let $$ = {
       props: args,
-      slots: findSlots(manager, children, slots)
+      slots: findSlots(manager, children, $),
+      results: {
+        html: '',
+        css: $.results.css
+      }
     }
     try {
-      return element.type($)
+      return element.type($$).html
     } catch (e) {
       // @ts-ignore
-      return '<pre><code>' + (e.stack||e) + '</code></pre>'
+      return '<pre><code>' + (e.stack || e) + '</code></pre>'
     }
   }
   else {
@@ -67,10 +72,10 @@ export function renderToString(element, slots) {
     let tagName = element.type.toLowerCase()
     let is_void = void_element_names.test(tagName)
     if (tagName == "slot") {
-      let fn = slots[element.props.name || 'default']
+      let fn = $.slots[element.props.name || 'default']
       if (fn) return fn()
-      else return renderToString(children, slots)
+      else return renderToString(children, $)
     }
-    return "<" + tagName + Object.entries(args).map(([arg, value]) => " " + esc(arg) + '="' + esc(value) + '"').join('') + " > " + renderToString(children, slots) + (is_void ? "" : ("</" + tagName + ">"))
+    return "<" + tagName + Object.entries(args).map(([arg, value]) => " " + esc(arg) + '="' + esc(value) + '"').join('') + " > " + renderToString(children, $) + (is_void ? "" : ("</" + tagName + ">"))
   }
 }

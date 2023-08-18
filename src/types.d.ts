@@ -1,9 +1,16 @@
 export interface $Context {
   props: Record<string, any>
   slots: Record<string, () => string>
+  results: {
+    html: string
+    css: Set<string>
+  }
 }
 export type FrComponentFactory = ($: $Context) => FrElement
-export type FrComponent = ($: $Context) => string
+export type FrComponent = ($: $Context) => {
+  html: string
+  css: Set<string>
+}
 
 export interface FrElement {
   $$typeof: symbol;

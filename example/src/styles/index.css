@@ -4,6 +4,10 @@ body {
     background-image: linear-gradient(-10deg, transparent 50%, #85FFBD 75%, #FFFB7D 100%);
 }
 
+:root{
+    --color-primary: 150, 100%;
+}
+
 .hero {
     display: flex;
     align-items: center;
@@ -14,7 +18,6 @@ body {
 
 .card {
     border-radius: 12px;
-    ;
     overflow: hidden;
 }
 .nav{

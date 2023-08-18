@@ -1,5 +1,6 @@
 <script>
     import Icon from './Icon.html';
+    import Button from './Button.html';
     // import ThemeToggle from './ThemeToggle.astro';
     // import type { iconPaths } from './IconPaths';
 
@@ -25,5 +26,18 @@
     <div>
         <span>Kavindu Santhusa</span>
     </div>
-    <button>hh</button>
+    <div>
+        {textLinks.map(link => <Button filled>{link.label}</Button>)}
+    </div>
+    <div>
+        {iconLinks.map(iconLink => <Icon icon={iconLink.icon} />)}
+    </div>
 </nav>
+<style>
+    .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2rem 5rem;
+    }
+</style>

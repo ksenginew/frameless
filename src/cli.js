@@ -48,9 +48,11 @@ polka()
       if (!/\.html?$/.test(index) || !(await fs.stat(index)).isFile())
         return next();
       const fn = runtime(index)
-      let result;
+      let result, css;
       try {
-        result = fn.default({ props: {}, slots: {} })
+        result = fn.default({ props: {}, slots: {}, results: { html: '', css: new Set() } })
+        css = result.css
+        result = result.html
       } catch (e) {
         // @ts-ignore
         result = e.stack || (e + '')
@@ -63,7 +65,7 @@ polka()
         res.end("<script>" + client_code + "</script>" + result);
         return
       }
-      result = result.replace(/(?=<head>)/, "<script>" + client_code + "</script>")
+      result = result.replace(/(?=<\/head)/gm, "<script>" + client_code + "</script>" + "<style>" + [...css].join('') + "</style>")
       dev(index)
       const time = Date.now() - start;
       res.writeHead(200, {
@@ -89,13 +91,15 @@ const RE = /<!--[^]*?-->|<[!?][^]*?>|<script(\s[^]*?)?>([^]*?)<\/script>|<style(
  */
 function compiler(src, id) {
   let js = ''
+  let style = ''
   src = src.replace(RE, (_, attr, code, sattr, css) => {
+    if (css) style += css
     if (css || (attr && attr.indexOf("client") !== -1)) return ""
     if (code)
       js += code;
     return ''
   })
-  return `import {create_ssr_component as $$csc} from 'frameless';const App = $$csc($=>{${js};return <>${src}</>});export default App;`
+  return `import {create_ssr_component as $$csc} from 'frameless';const App = $$csc($=>{$.results.css.add(${JSON.stringify(style)});${js};return <>${src}</>});export default App;`
 }
 let runtime = createRuntime(compiler);
 

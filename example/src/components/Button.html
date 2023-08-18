@@ -1,0 +1,33 @@
+<script>
+    const { filled, ...props } = $.props
+    const className = ["button", filled && "filled"].filter(Boolean).join(" ")
+</script>
+<button class={className} {...props}>
+    <slot />
+</button>
+<style>
+    .button {
+        display: inline-block;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: hsl(var(--color-primary), 40%);
+        text-align: center;
+        text-decoration: none;
+        vertical-align: middle;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+        border-radius: 9999px;
+        border: 0;
+        background-color: transparent;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .button.filled {
+        background-color: hsl(var(--color-primary), 40%);
+        color: hsl(var(--color-primary), 99%);
+    }
+</style>
