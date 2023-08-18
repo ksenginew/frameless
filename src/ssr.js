@@ -58,7 +58,8 @@ export function renderToString(element, slots) {
     try {
       return element.type($)
     } catch (e) {
-      return '<h1>Error' + e + '</h1>'
+      // @ts-ignore
+      return '<pre><code>' + (e.stack||e) + '</code></pre>'
     }
   }
   else {
@@ -66,11 +67,10 @@ export function renderToString(element, slots) {
     let tagName = element.type.toLowerCase()
     let is_void = void_element_names.test(tagName)
     if (tagName == "slot") {
-      debugger
       let fn = slots[element.props.name || 'default']
       if (fn) return fn()
       else return renderToString(children, slots)
     }
-    return "<" + tagName + Object.entries(args).map(([arg, value]) => " " + esc(arg) + '="' + esc(value) + '"').join('') + " > " + renderToString(children, slots) + "</" + tagName + ">"
+    return "<" + tagName + Object.entries(args).map(([arg, value]) => " " + esc(arg) + '="' + esc(value) + '"').join('') + " > " + renderToString(children, slots) + (is_void ? "" : ("</" + tagName + ">"))
   }
 }
