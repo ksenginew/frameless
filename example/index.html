@@ -1,6 +1,29 @@
 <script>
   import BaseLayout from "./src/layouts/BaseLayout.html"
+  import Card from "./src/components/Card.html"
 </script>
 <BaseLayout>
-    <h1>333</h1>
+  <header class="hero">
+    <div style="width:50%;">
+      <h1>Hello, my name is Kavindu Santhusa</h1>
+      <p>I am a Creative Developer who is currently based in Yakkala, Sri Lanka.</p>
+      <div class="roles">
+        <pill>
+          <icon icon="code" size="1.33em" /> Developer
+        </pill>
+        <pill>
+          <icon icon="microphone-stage" size="1.33em" /> Speaker
+        </pill>
+        <pill>
+          <icon icon="pencil-line" size="1.33em" /> Writer
+        </pill>
+      </div>
+    </div>
+    <div style="width:50%; padding: 5rem;">
+      <Card>
+        <img alt="Kavindu Santhusa" width="100%" height="100%" src="https://github.com/ksenginew.png" />
+      </Card>
+    </div>
+  </header>
+
 </BaseLayout>
