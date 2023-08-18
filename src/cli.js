@@ -52,6 +52,7 @@ polka()
       try {
         result = fn.default({ props: {}, slots: {} })
       } catch (e) {
+        // @ts-ignore
         result = e.stack || (e + '')
         const time = Date.now() - start;
         res.writeHead(500, {
@@ -76,7 +77,7 @@ polka()
       next();
     }
   })
-  .use(sirv())
+  .use(sirv(root, { dev: true }))
   .listen(3000, () => {
     console.info(`> Running on localhost:3000`);
   });
@@ -93,7 +94,7 @@ function compiler(src, id) {
     if (code)
       js += code;
     return ''
-  }).replace(/<slot\s*\/>/g, "{$.slot}")
+  })
   return `import {create_ssr_component as $$csc} from 'frameless';const App = $$csc($=>{${js};return <>${src}</>});export default App;`
 }
 let runtime = createRuntime(compiler);
