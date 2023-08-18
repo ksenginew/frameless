@@ -6,10 +6,7 @@ import sirv from "sirv";
 import path from "path";
 import { createRuntime } from "./run.js";
 import { WebSocket, WebSocketServer } from "ws";
-import { parse } from "./parser.js";
-import { stringify } from "./ssr.js";
 import posix from "path/posix";
-import { transform as sucrase } from "sucrase";
 
 const client_code = `
 const socket = new WebSocket("ws://localhost:3001");
@@ -50,20 +47,19 @@ polka()
         index = path.resolve(index, "index.html");
       if (!/\.html?$/.test(index) || !(await fs.stat(index)).isFile())
         return next();
-        debugger
       const fn = runtime(index)
       let result;
       try {
-        result = fn.default({})
+        result = fn.default({ props: {}, slots: {} })
       } catch (e) {
-        result = e + ''
+        result = e.stack || (e + '')
         const time = Date.now() - start;
         res.writeHead(500, {
           "Content-Type": "text/html;charset=utf-8",
           "Content-Length": Buffer.byteLength(result, "utf-8"),
           "Server-Timing": `index.html;dur=${time}`,
         });
-        res.end("<script>" + client_code + "</script>"+result);
+        res.end("<script>" + client_code + "</script>" + result);
         return
       }
       result = result.replace(/(?=<head>)/, "<script>" + client_code + "</script>")
@@ -80,25 +76,25 @@ polka()
       next();
     }
   })
-  // .use(sirv())
+  .use(sirv())
   .listen(3000, () => {
     console.info(`> Running on localhost:3000`);
   });
 
-const RE = /<!--[^]*?-->|<[!?][^]*?>|<script(\s[^]*?)?>([^]*?)<\/script>/g
+const RE = /<!--[^]*?-->|<[!?][^]*?>|<script(\s[^]*?)?>([^]*?)<\/script>|<style(\s[^]*?)?>([^]*?)<\/style>/g
 /**
  * @param {string} src
  * @param {string} id
  */
 function compiler(src, id) {
   let js = ''
-  src = src.replace(RE, (_, attr, code) => {
-    if (attr && attr.indexOf("client") !== -1) return _
+  src = src.replace(RE, (_, attr, code, sattr, css) => {
+    if (css || (attr && attr.indexOf("client") !== -1)) return ""
     if (code)
       js += code;
     return ''
   }).replace(/<slot\s*\/>/g, "{$.slot}")
-  return `import _h from 'vhtml';const React={Fragment:props=>_h(null,null,...(props.children||[]))};const h=(n,a,...c)=>{if(a){delete a.__self;delete a.__source;}return _h(n,a,...c)};export default function App(_$props){const $={props:_$props, slot: _$props.children};${js};return <>${src}</>}`
+  return `import {create_ssr_component as $$csc} from 'frameless';const App = $$csc($=>{${js};return <>${src}</>});export default App;`
 }
 let runtime = createRuntime(compiler);
 

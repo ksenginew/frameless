@@ -1,8 +1,10 @@
 export interface $Context {
   props: Record<string, any>
-  slots: Record<string, FrElement | string | (FrElement | string | undefined)[]>
+  slots: Record<string, () => string>
 }
-export type FrComponent = ($: $Context) => FrElement
+export type FrComponentFactory = ($: $Context) => FrElement
+export type FrComponent = ($: $Context) => string
+
 export interface FrElement {
   $$typeof: symbol;
   type: string | FrComponent | symbol;

@@ -1,20 +1,17 @@
 <script>
-    // interface Props {
-    // 	title: string;
-    // 	tagline?: string;
-    // 	align?: 'start' | 'center';
-    // }
+// interface Props {
+// 	title: string;
+// 	tagline?: string;
+// 	align?: 'start' | 'center';
+// }
 
-    const { align = 'center', tagline, title } = $.props;
+const { align = 'center', tagline, title } = Astro.props;
 </script>
 
-<header class="hero">
-    <div>
-        <h1 class="title">{title}</h1>
-        {tagline && <p class="tagline">{tagline}</p>}
-    </div>
-    <slot />
+<header >
+	<div class="">
+		<h1>{title}</h1>
+		{tagline && <p>{tagline}</p>}
+	</div>
+	<slot />
 </header>
-
-<style>
-</style>

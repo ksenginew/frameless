@@ -8,11 +8,7 @@
 // }
 
 const { color = 'currentcolor', gradient, icon, size } = $.props;
-const iconPath = ""//iconPaths[icon];
+const iconPath = `https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/${icon}.svg`
 
-const attrs = {};
-if (size) attrs.style = { '--size': size };
-
-const gradientId = 'icon-gradient-' + Math.round(Math.random() * 10e12).toString(36);
 </script>
-<p>hi</p>
+<img height="32" width="32" src={iconPath} />

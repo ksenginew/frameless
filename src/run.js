@@ -87,9 +87,8 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
     let transformed = sucrase(source, {
       filePath,
       transforms,
-      jsxRuntime: "classic",
-      jsxImportSource: "vhtml",
-      jsxPragma: "h",
+      jsxRuntime: "automatic",
+      jsxImportSource:"frameless"
     });
     let code = transformed.code;
 
@@ -127,7 +126,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
       ext = extname(filename);
 
       // Unknown format
-      if (ext && !/\.html?/.test(ext)) return nativeRequire(id);
+      if (ext && !/\.([mc]?[jt]sx?|html?)/.test(ext)) return nativeRequire(id);
 
       // Read source
       source = readFileSync(filename, "utf-8");
@@ -135,6 +134,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
 
     // Transpile
     const isTypescript = false;
+    if (ext && /\.html?/.test(ext))
     source = compiler(source, filename);
     source = transform(source, filename, isTypescript);
 
