@@ -5,12 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  frameless:
+    specifier: file:.
+    version: 'file:'
   parse5:
     specifier: ^7.1.2
     version: 7.1.2
-  vhtml:
-    specifier: ^2.2.0
-    version: 2.2.0
 
 devDependencies:
   '@types/minimist':
@@ -624,10 +624,6 @@ packages:
     resolution: {integrity: sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA==}
     dev: true
 
-  /vhtml@2.2.0:
-    resolution: {integrity: sha512-TPXrXrxBOslRUVnlVkiAqhoXneiertIg86bdvzionrUYhEuiROvyPZNiiP6GIIJ2Q7oPNVyEtIx8gMAZZE9lCQ==}
-    dev: false
-
   /whatwg-encoding@2.0.0:
     resolution: {integrity: sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg==}
     engines: {node: '>=12'}
@@ -651,3 +647,10 @@ packages:
       utf-8-validate:
         optional: true
     dev: true
+
+  'file:':
+    resolution: {directory: '', type: directory}
+    name: frameless
+    dependencies:
+      parse5: 7.1.2
+    dev: false

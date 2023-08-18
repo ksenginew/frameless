@@ -9,14 +9,32 @@ let map = { '&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', "'": 'apos' };
 /** @type {Record<string,string>} */
 let sanitized = {};
 
-function updateSlots
+
+/**
+ * @param {import("./types").FrElement} element
+ */
+function updateSlots(element,slots) {
+  if (typeof element.type === 'string' && element.type.toLowerCase() === 'slot') {
+    let name = element.props.name
+    if(name)
+  }
+  if (element.props.children)
+    if (Array.isArray(element.props.children))
+      element.props.children.forEach(c => typeof c === 'object' && updateSlots(c,slots))
+    else updateSlots(element,slots)
+}
+
+function findSlots(children) {
+let slots = {default:children}
+}
+
 /**
  * @param {import("./types").FrComponent} fn
  */
-export function create_ssr_component(fn){
-  return ($) =>{
+export function create_ssr_component(fn) {
+  return (/** @type {import("./types").$Context} */ $) => {
     let root = fn($)
-    $.slots.forEach()
+    updateSlots(root, $.slots)
   }
 }
 
@@ -34,8 +52,8 @@ export function renderToString(element) {
     let { children, ...args = {} } = element.props || {}
     let tagName = element.type.toLowerCase()
     let is_void = void_element_names.test(tagName)
-    if (tagName == "slot") 
-    return renderToString(slots||children,[])
-    return "<" + tagName + Object.entries(args).map(([arg, value]) => " " + esc(arg) + '"' + esc(value) + "'")+" > " +content
+    if (tagName == "slot")
+      return renderToString(slots || children, [])
+    return "<" + tagName + Object.entries(args).map(([arg, value]) => " " + esc(arg) + '"' + esc(value) + "'") + " > " + content
   }
 }
