@@ -1,0 +1,19 @@
+<script>
+    import { addClass } from "../shared/css.js"
+    const { is: Is = 'div', ...props } = $.props
+    addClass(props, $.style.grid)
+</script>
+
+<Is {...props}>
+    <slot />
+</Is>
+
+<style>
+    .grid {
+        display: flex;
+        --Grid-columns: 12;
+        --Grid-columnSpacing: 16px;
+        --Grid-rowSpacing: 16px;
+        flex-flow: wrap;
+    }
+</style>

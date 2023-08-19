@@ -20,6 +20,13 @@ body {
     border-radius: 12px;
     overflow: hidden;
 }
-.nav{
-    display: flex;
+
+.round {
+    border-radius: 9999px;
+}
+
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
 }

@@ -64,7 +64,7 @@ export function renderToString(element, $) {
       return element.type($$).html
     } catch (e) {
       // @ts-ignore
-      return '<pre><code>' + (e.stack || e) + '</code></pre>'
+      return '<pre style="padding:1rem;border:2px solid red;background-color:#ff8080;overflow:auto;"><code>' + (e.stack || e) + '</code></pre>'
     }
   }
   else {
@@ -76,6 +76,6 @@ export function renderToString(element, $) {
       if (fn) return fn()
       else return renderToString(children, $)
     }
-    return "<" + tagName + Object.entries(args).map(([arg, value]) => " " + esc(arg) + '="' + esc(value) + '"').join('') + " > " + renderToString(children, $) + (is_void ? "" : ("</" + tagName + ">"))
+    return "<" + tagName + Object.entries(args).map(([arg, value]) => " " + esc(arg) + '="' + (Array.isArray(value) ? esc(value.join(" ")) : esc(value)) + '"').join('') + " > " + renderToString(children, $) + (is_void ? "" : ("</" + tagName + ">"))
   }
 }

@@ -36,7 +36,8 @@ async function dev(file) {
 
 
 let argv = minimist(process.argv.slice(2));
-let root = process.cwd();
+let root = argv._[0] || '.'
+root = path.resolve(process.cwd(), root)
 polka()
   .use(async (req, res, next) => {
     const filePath = posix.normalize(req.path);
@@ -65,7 +66,7 @@ polka()
         res.end("<script>" + client_code + "</script>" + result);
         return
       }
-      result = result.replace(/(?=<\/head)/gm, "<script>" + client_code + "</script>" + "<style>" + [...css].join('') + "</style>")
+      result = result.replace(/(?<=<head[^]*?>)/, "<script>" + client_code + "</script>" + "<style>" + [...css].join('') + "</style>")
       dev(index)
       const time = Date.now() - start;
       res.writeHead(200, {
@@ -99,7 +100,17 @@ function compiler(src, id) {
       js += code;
     return ''
   })
-  return `import {create_ssr_component as $$csc} from 'frameless';const App = $$csc($=>{$.results.css.add(${JSON.stringify(style)});${js};return <>${src}</>});export default App;`
+  /** @type Record<string,string> */
+  let stylemap = {}
+  style = style.replace(/\/\*[^]*?\*\/|  +/g, '').replace(/([^;}{]*?) *{/g, selectors => {
+    return selectors.trim().replace(/\n+/g, ' ').replace(/\.([\u0080-\uFFFF\w-%@]+)/g, (_, k) => {
+      if (stylemap[k]) return '.' + stylemap[k]
+      let id = '_' + Math.random().toString(36).slice(2)
+      stylemap[k] = id
+      return '.' + id
+    })
+  })
+  return `import {create_ssr_component as $$csc} from 'frameless';const App = $$csc($=>{$.results.css.add(${JSON.stringify(style)});$.style=${JSON.stringify(stylemap)};${js};return <>${src}</>});export default App;`
 }
 let runtime = createRuntime(compiler);
 

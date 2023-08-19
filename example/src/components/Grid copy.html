@@ -1,0 +1,18 @@
+<script>
+    import { addClass } from "../shared/css.js"
+    const { is: Is = 'div', ...props } = $.props
+    addClass(props, $.style.item)
+</script>
+
+<Is {...props}>
+    <slot />
+</Is>
+
+<style>
+    .item {
+        -webkit-box-flex: 0;
+        flex-grow: 0;
+        flex-basis: auto;
+        width: calc(100% * 8 / var(--Grid-columns));
+    }
+</style>

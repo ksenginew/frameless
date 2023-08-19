@@ -1,16 +1,21 @@
 <script>
-    const { filled, ...props } = $.props
-    const className = ["button", filled && "filled"].filter(Boolean).join(" ")
+    const { filled, border, round, ...props } = $.props
+    const className = [$.style.button, filled && $.style.filled, border && 'border', round && 'round'].filter(Boolean).join(" ")
 </script>
 <button class={className} {...props}>
     <slot />
 </button>
 <style>
     .button {
-        display: inline-block;
-        padding: 0.375rem 0.75rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5em;
+        padding-left: 0.75em;
+        padding-right: 0.75em;
+        height: 2.5em;
+        min-width: 3rem;
         font-size: 1rem;
-        font-weight: 400;
+        font-weight: 500;
         line-height: 1.5;
         color: hsl(var(--color-primary), 40%);
         text-align: center;
@@ -20,14 +25,26 @@
         -webkit-user-select: none;
         -moz-user-select: none;
         user-select: none;
-        border-radius: 9999px;
         border: 0;
+        border-radius: 0.25rem;
         background-color: transparent;
         transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
 
-    .button.filled {
+    .button:hover {
+        background-color: hsl(var(--color-primary), 92%)
+    }
+
+    .filled {
         background-color: hsl(var(--color-primary), 40%);
         color: hsl(var(--color-primary), 99%);
+    }
+
+    .filled:hover {
+        background-color: hsl(var(--color-primary), 32%)
+    }
+
+    .filled:focus {
+        background-color: hsl(var(--color-primary), 28%)
     }
 </style>

@@ -22,15 +22,16 @@
     ];
 </script>
 
-<nav class="nav">
+<nav class={$.style.nav}>
     <div>
         <span>Kavindu Santhusa</span>
     </div>
     <div>
-        {textLinks.map(link => <Button filled>{link.label}</Button>)}
+        {textLinks.map(link => <Button filled round>{link.label}</Button>)}
     </div>
     <div>
-        {iconLinks.map(iconLink => <Icon icon={iconLink.icon} />)}
+        {iconLinks.map(iconLink =>
+        <Icon icon={iconLink.icon} />)}
     </div>
 </nav>
 <style>

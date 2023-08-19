@@ -105,12 +105,13 @@ export function jsx(type, config, maybeKey) {
         }
     }
 
+    if(!["string","symbol","function"].includes(typeof type)) throw Error(`Tagname is type of "${typeof type}", which should be "string","symbol" or "function".`)
     return ReactElement(
         type,
         key,
         ref,
-        undefined,
-        undefined,
+        config.__self,
+        config.__source,
         null,
         props,
     );
