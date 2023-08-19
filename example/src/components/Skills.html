@@ -1,0 +1,18 @@
+<script>
+    import Button from "./Button.html"
+    const { skills } = $.props
+</script>
+<section class={$.style.skills}>
+    {skills.map(skill => <div class="stack gap-2 lg:gap-4">
+        <!-- <Icon icon="terminal-window" color="var(--accent-regular)" size="2.5rem" gradient /> -->
+        <h2>{skill.skill}</h2>
+        <p>{skill.details}</p>
+    </div>)}
+</section>
+
+<style>
+    .skills {
+        display: flex;
+        gap: 3rem;
+    }
+</style>

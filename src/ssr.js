@@ -76,6 +76,6 @@ export function renderToString(element, $) {
       if (fn) return fn()
       else return renderToString(children, $)
     }
-    return "<" + tagName + Object.entries(args).map(([arg, value]) => " " + esc(arg) + '="' + (Array.isArray(value) ? esc(value.join(" ")) : esc(value)) + '"').join('') + " > " + renderToString(children, $) + (is_void ? "" : ("</" + tagName + ">"))
+    return "<" + tagName + Object.entries(args).map(([arg, value]) => arg == 'slot' ? '' : (" " + esc(arg) + '="' + (Array.isArray(value) ? esc(value.join(" ")) : esc(value)) + '"')).join('') + " > " + renderToString(children, $) + (is_void ? "" : ("</" + tagName + ">"))
   }
 }

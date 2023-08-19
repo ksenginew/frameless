@@ -1,8 +1,9 @@
 <script>
+    import { addClass } from "../shared/css.js"
     const { filled, border, round, ...props } = $.props
-    const className = [$.style.button, filled && $.style.filled, border && 'border', round && 'round'].filter(Boolean).join(" ")
+    addClass(props, $.style.button, filled && $.style.filled, border && 'border', round && 'round')
 </script>
-<button class={className} {...props}>
+<button {...props}>
     <slot />
 </button>
 <style>
@@ -33,6 +34,10 @@
 
     .button:hover {
         background-color: hsl(var(--color-primary), 92%)
+    }
+
+    .button+.button {
+        margin-left: 0.5rem;
     }
 
     .filled {

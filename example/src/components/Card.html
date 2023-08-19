@@ -1,3 +1,16 @@
-<div class="card" {...$.props}>
-    <slot/>
-</div>
+<script>
+    import { addClass } from "../shared/css.js"
+    const { is: Is = 'div', ...props } = $.props
+    addClass(props, $.style.card)
+</script>
+
+<Is {...props}>
+    <slot />
+</Is>
+
+<style>
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+</style>

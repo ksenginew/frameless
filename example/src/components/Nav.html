@@ -23,10 +23,10 @@
 </script>
 
 <nav class={$.style.nav}>
-    <div>
-        <span>Kavindu Santhusa</span>
+    <div class={$.style.brand}>
+        <span clas>Kavindu Santhusa</span>
     </div>
-    <div>
+    <div class={$.style.links}>
         {textLinks.map(link => <Button filled round>{link.label}</Button>)}
     </div>
     <div>
@@ -40,5 +40,14 @@
         align-items: center;
         justify-content: space-between;
         padding: 2rem 5rem;
+    }
+    .links{
+        background-color: rgba(255,255,255,0.75);
+        padding: 0.25rem;
+        border-radius: 9999px;
+    }
+    .brand{
+        font-weight: 500;
+        font-size: 1.25rem;
     }
 </style>
