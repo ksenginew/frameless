@@ -1,53 +1,54 @@
 <script>
-    import Icon from './Icon.html';
-    import Button from './Button.html';
-    // import ThemeToggle from './ThemeToggle.astro';
-    // import type { iconPaths } from './IconPaths';
+  import Icon from "./Icon.html";
+  import Button from "./Button.html";
+  // import ThemeToggle from './ThemeToggle.astro';
+  // import type { iconPaths } from './IconPaths';
 
-    /** Main menu items */
-    const textLinks = [
-        { label: 'Home', href: '/' },
-        { label: 'Work', href: '/work/' },
-        { label: 'About', href: '/about/' },
-    ];
+  /** Main menu items */
+  const textLinks = [
+    { label: "Home", href: "/" },
+    { label: "Work", href: "/work/" },
+    { label: "About", href: "/about/" },
+  ];
 
-    /** Icon links to social media — edit these with links to your profiles! */
-    const iconLinks = [
-        { label: 'Twitter', href: 'https://twitter.com/me', icon: 'twitter' },
-        { label: 'Twitch', href: 'https://twitch.tv/me', icon: 'twitch' },
-        { label: 'GitHub', href: 'https://github.com/me', icon: 'github' },
-        { label: 'CodePen', href: 'https://codepen.io/me', icon: 'codepen' },
-        { label: 'dribbble', href: 'https://dribbble.com/me', icon: 'dribbble' },
-        { label: 'YouTube', href: 'https://www.youtube.com/@me/', icon: 'youtube' },
-    ];
+  /** Icon links to social media — edit these with links to your profiles! */
+  const {socials} = $.props.config
+  const { nav, brand, links, socialLinks } = $.style
 </script>
 
-<nav class={$.style.nav}>
-    <div class={$.style.brand}>
-        <span clas>Kavindu Santhusa</span>
-    </div>
-    <div class={$.style.links}>
-        {textLinks.map(link => <Button filled round>{link.label}</Button>)}
-    </div>
-    <div>
-        {iconLinks.map(iconLink =>
-        <Icon icon={iconLink.icon} />)}
-    </div>
+<nav class={nav}>
+  <div class={brand}>
+    <span clas>Kavindu Santhusa</span>
+  </div>
+  <div class={links}>
+    {textLinks.map(link => <Button filled round>{link.label}</Button>)}
+  </div>
+  <div class={socialLinks}>
+    {socials.map(iconLink =>
+    <a href={iconLink.href}><Icon icon={iconLink.icon} /></a>)}
+  </div>
 </nav>
 <style>
-    .nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 2rem 5rem;
-    }
-    .links{
-        background-color: rgba(255,255,255,0.75);
-        padding: 0.25rem;
-        border-radius: 9999px;
-    }
-    .brand{
-        font-weight: 500;
-        font-size: 1.25rem;
-    }
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 5rem;
+  }
+
+  .links {
+    background-color: rgba(255, 255, 255, 0.75);
+    padding: 0.25rem;
+    border-radius: 9999px;
+  }
+
+  .brand {
+    font-weight: 500;
+    font-size: 1.25rem;
+  }
+
+  .socialLinks{
+    display: flex;
+    gap: 1rem;
+  }
 </style>

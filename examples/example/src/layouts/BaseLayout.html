@@ -1,28 +1,26 @@
 <script>
-	// Component Imports
-	// import MainHead from '../components/MainHead.html';
-	import Nav from '../components/Nav.html';
-	// import Footer from '../components/Footer.html';
+  // Component Imports
+  // import MainHead from '../components/MainHead.html';
+  import Nav from "../components/Nav.html";
+  // import Footer from '../components/Footer.html';
 
-	// interface Props {
-	// 	title?: string | undefined;
-	// 	description?: string | undefined;
-	// }
+  // interface Props {
+  // 	title?: string | undefined;
+  // 	description?: string | undefined;
+  // }
 
-	const { title, description } = $.props;
+  const { title, description } = $.props;
 </script>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <link rel="stylesheet" href="/src/styles/index.css" />
+  </head>
 
-<head>
-	<link rel="stylesheet" href="/src/styles/index.css"/>
-</head>
-
-<body>
-	<main>
-		<Nav/>
-		<slot />
-	</main>
-</body>
-
+  <body>
+    <main>
+      <Nav config={$.props.config}/>
+      <slot />
+    </main>
+  </body>
 </html>

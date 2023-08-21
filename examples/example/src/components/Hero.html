@@ -1,38 +1,38 @@
 <script>
-	// interface Props {
-	// 	title: string;
-	// 	tagline?: string;
-	// 	align?: 'start' | 'center';
-	// }
+  // interface Props {
+  // 	title: string;
+  // 	tagline?: string;
+  // 	align?: 'start' | 'center';
+  // }
 
-	const { align = 'center', tagline, title } = $.props;
+  const { align = "center", tagline, title } = $.props;
 </script>
 
 <header class={$.style.header}>
-	<div class={$.style.item}>
-		<slot name="left" />
-	</div>
-	<div class={$.style.item}>
-		<slot name="right" />
-	</div>
+  <div class={$.style.item}>
+    <slot name="left" />
+  </div>
+  <div class={$.style.item}>
+    <slot name="right" />
+  </div>
 </header>
 <style>
-	.header{
-		display: flex;
-        flex-wrap: wrap;
-		align-items: center;
-		flex-direction: column-reverse;
-		padding:2.5rem;
-	}
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-direction: column-reverse;
+    padding: 2.5rem;
+  }
 
-	@media (min-width: 768px) {
-        .header {
-            flex-direction: row;
-        }
+  @media (min-width: 768px) {
+    .header {
+      flex-direction: row;
     }
+  }
 
-    .item {
-        max-width: 100%;
-        flex: 0 0 50%;
-    }
+  .item {
+    max-width: 100%;
+    flex: 0 0 50%;
+  }
 </style>

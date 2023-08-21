@@ -27,17 +27,16 @@ async function dev(file) {
   try {
     const watcher = fs.watch(file);
     for await (const event of watcher)
-      if (event.eventType == 'change')
+      if (event.eventType == "change")
         clients.forEach((ws) => ws.send(JSON.stringify({ t: 0 })));
   } catch (err) {
     throw err;
   }
 }
 
-
 let argv = minimist(process.argv.slice(2));
-let root = argv._[0] || '.'
-root = path.resolve(process.cwd(), root)
+let root = argv._[0] || ".";
+root = path.resolve(process.cwd(), root);
 polka()
   .use(async (req, res, next) => {
     const filePath = posix.normalize(req.path);
@@ -48,15 +47,19 @@ polka()
         index = path.resolve(index, "index.html");
       if (!/\.html?$/.test(index) || !(await fs.stat(index)).isFile())
         return next();
-      const fn = runtime(index)
+      const fn = runtime(index);
       let result, css;
       try {
-        result = fn.default({ props: {}, slots: {}, results: { html: '', css: new Set() } })
-        css = result.css
-        result = result.html
+        result = await fn.default({
+          props: {},
+          slots: {},
+          results: { html: "", css: new Set() },
+        });
+        css = result.css;
+        result = result.html;
       } catch (e) {
         // @ts-ignore
-        result = e.stack || (e + '')
+        result = e.stack || e + "";
         const time = Date.now() - start;
         res.writeHead(500, {
           "Content-Type": "text/html;charset=utf-8",
@@ -64,10 +67,18 @@ polka()
           "Server-Timing": `index.html;dur=${time}`,
         });
         res.end("<script>" + client_code + "</script>" + result);
-        return
+        return;
       }
-      result = result.replace(/(?<=<head[^]*?>)/, "<script>" + client_code + "</script>" + "<style>" + [...css].join('') + "</style>")
-      dev(index)
+      result = result.replace(
+        /(?<=<head[^]*?>)/,
+        "<script>" +
+          client_code +
+          "</script>" +
+          "<style>" +
+          [...css].join("") +
+          "</style>",
+      );
+      dev(index);
       const time = Date.now() - start;
       res.writeHead(200, {
         "Content-Type": "text/html;charset=utf-8",
@@ -76,7 +87,7 @@ polka()
       });
       res.end(result);
     } catch (e) {
-      console.log(e)
+      console.log(e);
       next();
     }
   })
@@ -85,32 +96,42 @@ polka()
     console.info(`> Running on localhost:3000`);
   });
 
-const RE = /<!--[^]*?-->|<[!?][^]*?>|<script(\s[^]*?)?>([^]*?)<\/script>|<style(\s[^]*?)?>([^]*?)<\/style>/g
+const RE =
+  /<!--[^]*?-->|<[!?][^]*?>|<script(\s[^]*?)?>([^]*?)<\/script>|<style(\s[^]*?)?>([^]*?)<\/style>/g;
 /**
  * @param {string} src
  * @param {string} id
  */
 function compiler(src, id) {
-  let js = ''
-  let style = ''
+  let js = "";
+  let style = "";
   src = src.replace(RE, (_, attr, code, sattr, css) => {
-    if (css) style += css
-    if (css || (attr && attr.indexOf("client") !== -1)) return ""
-    if (code)
-      js += code;
-    return ''
-  })
+    if (css) style += css;
+    if (css || (attr && attr.indexOf("client") !== -1)) return "";
+    if (code) js += code;
+    return "";
+  });
   /** @type Record<string,string> */
-  let stylemap = {}
-  style = style.replace(/\/\*[^]*?\*\/|  +/g, '').replace(/([^;}{]*?) *{/g, selectors => {
-    return selectors.trim().replace(/\n+/g, ' ').replace(/\.([\u0080-\uFFFF\w-%@]+)/g, (_, k) => {
-      if (stylemap[k]) return '.' + stylemap[k]
-      let id = '_' + Math.random().toString(36).slice(2)
-      stylemap[k] = id
-      return '.' + id
-    })
-  })
-  return `import {create_ssr_component as $$csc, html} from 'frameless';const App = $$csc($=>{$.results.css.add(${JSON.stringify(style)});$.style=${JSON.stringify(stylemap)};${js};return <>${src}</>});export default App;`
+  let stylemap = {};
+  style = style
+    .replace(/\/\*[^]*?\*\/|  +/g, "")
+    .replace(/([^;}{]*?) *{/g, (selectors) => {
+      return selectors
+        .trim()
+        .replace(/\n+/g, " ")
+        .replace(/\.([\u0080-\uFFFF\w-%@]+)/g, (_, k) => {
+          if (stylemap[k]) return "." + stylemap[k];
+          let id = "_" + Math.random().toString(36).slice(2);
+          stylemap[k] = id;
+          return "." + id;
+        });
+    });
+  return `import {create_ssr_component as $$csc, html} from 'frameless';const {atob,btoa,Blob,File,Headers,Request,Response,fetch,FormData,ReadableStream,WritableStream,AbortController}=require("module").createRequire(__filename)("@remix-run/node");`+
+  `const App = $$csc(async function($){$.results.css.add(${JSON.stringify(
+    style,
+  )});$.style=${JSON.stringify(
+    stylemap,
+  )};${js};return <>${src}</>});export default App;`;
 }
 let runtime = createRuntime(compiler);
 

@@ -1,25 +1,26 @@
 export interface $Context {
-  props: Record<string, any>
-  slots: Record<string, () => string>
+  props: Record<string, any>;
+  slots: Record<string, () => Promise<string>>;
   results: {
-    html: string
-    css: Set<string>
-  }
+    html: string;
+    css: Set<string>;
+  };
 }
-export type FrComponentFactory = ($: $Context) => FrElement
-export type FrComponent = ($: $Context) => {
-  html: string
-  css: Set<string>
-}
+export type FrComponentFactory = ($: $Context) => Promise<FrElement>;
+export type FrComponent = ($: $Context) => Promise<{
+  html: string;
+  css: Set<string>;
+}>;
 
 export interface FrElement {
+  data: string | PromiseLike<string>;
   $$typeof: symbol;
   type: string | FrComponent | symbol;
   key: any;
   ref: string;
   props: {
-    children?: FrElement | string | (FrElement | string | undefined)[]
-    [key: string]: any
-  }
+    children?: FrElement | string | (FrElement | string | undefined)[];
+    [key: string]: any;
+  };
   _owner: any;
 }

@@ -30,7 +30,8 @@
     "ws": "^8.13.0"
   },
   "dependencies": {
-    "parse5": "^7.1.2",
-    "frameless": "file:."
+    "@remix-run/node": "^1.19.3",
+    "frameless": "file:.",
+    "parse5": "^7.1.2"
   }
 }

@@ -29,7 +29,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
   function tryResolve(id, options) {
     try {
       return nativeRequire.resolve(id, options);
-    } catch (e) { }
+    } catch (e) {}
   }
 
   /**
@@ -88,7 +88,8 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
       filePath,
       transforms,
       jsxRuntime: "automatic",
-      jsxImportSource: "frameless"
+      jsxImportSource: "frameless",
+      preserveDynamicImport: false
     });
     let code = transformed.code;
 
@@ -134,8 +135,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
 
     // Transpile
     const isTypescript = false;
-    if (ext && /\.html?/.test(ext))
-      source = compiler(source, filename);
+    if (ext && /\.html?/.test(ext)) source = compiler(source, filename);
     source = transform(source, filename, isTypescript);
 
     // Compile module
@@ -156,7 +156,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
     // @ts-ignore
     mod.paths = Module._nodeModulePaths(mod.path);
 
-    debugger
+    debugger;
     // Compile wrapped script
     // mod._compile wraps require and require.resolve to global function
     vm.runInNewContext(

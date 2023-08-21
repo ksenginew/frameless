@@ -1,13 +1,13 @@
 <script>
-  import BaseLayout from "./src/layouts/BaseLayout.html"
-  import Card from "./src/components/Card.html"
-  import Container from "./src/components/Container.html"
-  import Roles from "./src/components/Roles.html"
-  import Hero from "./src/components/Hero.html"
-  import Skills from "./src/components/Skills.html"
-  import config from "./config.js"
+  import BaseLayout from "./src/layouts/BaseLayout.html";
+  import Card from "./src/components/Card.html";
+  import Container from "./src/components/Container.html";
+  import Roles from "./src/components/Roles.html";
+  import Hero from "./src/components/Hero.html";
+  import Skills from "./src/components/Skills.html";
+  import config from "./config.js";
 </script>
-<BaseLayout>
+<BaseLayout config={config}>
   <Container>
     <Hero>
       <div slot="left">
@@ -15,10 +15,10 @@
         <p>{config.tagline}</p>
         <Roles roles={config.roles} />
       </div>
-      <Card style="max-width: 50%; margin:auto" slot="right">
+      <Card style="max-width: 50%; margin: auto" slot="right">
         <img alt={config.image.alt} width="100%" src={config.image.src} />
       </Card>
     </Hero>
-    <Skills skills={config.skills}/>
+    <Skills skills={config.skills} />
   </Container>
 </BaseLayout>
