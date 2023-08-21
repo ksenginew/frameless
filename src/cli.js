@@ -110,7 +110,7 @@ function compiler(src, id) {
       return '.' + id
     })
   })
-  return `import {create_ssr_component as $$csc} from 'frameless';const App = $$csc($=>{$.results.css.add(${JSON.stringify(style)});$.style=${JSON.stringify(stylemap)};${js};return <>${src}</>});export default App;`
+  return `import {create_ssr_component as $$csc, html} from 'frameless';const App = $$csc($=>{$.results.css.add(${JSON.stringify(style)});$.style=${JSON.stringify(stylemap)};${js};return <>${src}</>});export default App;`
 }
 let runtime = createRuntime(compiler);
 

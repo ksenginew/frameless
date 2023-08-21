@@ -1,4 +1,4 @@
-export const FR_ELEMENT_TYPE = Symbol()
+export const FR_ELEMENT_TYPE = "element"
 export const Fragment = Symbol()
 export let __DEV__ = true
 
