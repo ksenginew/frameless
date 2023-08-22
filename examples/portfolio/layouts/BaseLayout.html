@@ -1,23 +1,47 @@
 <script>
-    const {config,title,description,image} = $.props
+    const { title, description, image } = $.props
+    import Container from "../../ui/Container.html";
 </script>
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>{title}</title>
-        <meta name="robots" content="follow, index" />
-        <meta name="description" content={description} />
-        <meta property="og:site_name" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:title" content={title} />
-        {image && <meta property="og:image" content={image} />}
-        <meta name="twitter:card" content={config.twitter?.summary_large_image} />
-        <meta name="twitter:site" content={config.twitter?.name} />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        {image && <meta name="twitter:image" content={image} />}
-    </head>
-    <body>
 
-    </body>
+<head>
+    <title>{title}</title>
+    <link rel="stylesheet" href="../main.css" />
+    <meta name="robots" content="follow, index" />
+    <meta name="description" content={description} />
+    <meta property="og:site_name" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:title" content={title} />
+    {image &&
+    <meta property="og:image" content={image} />}
+    <meta name="twitter:card" content="" />
+    <meta name="twitter:site" content="" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {image &&
+    <meta name="twitter:image" content={image} />}
+</head>
+
+<body>
+    <Container>
+
+        <slot />
+
+        <hr />
+        Twitter @yourname
+
+
+        GitHub @yourname
+
+
+        Instagram @yourname
+
+
+        Email your@name.com
+        <hr />
+        {new Date().getFullYear()} © Your Name.
+    </Container>
+</body>
+
 </html>

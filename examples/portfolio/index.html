@@ -1,7 +1,23 @@
 <script>
     import BaseLayout from "./layouts/BaseLayout.html";
-    // import Container from "./components/Container.html";
-    import config from "./config.js";
+    import Button from "../ui/Button.html";
+    import Icon from "../ui/Icon.html";
+    const title = "Your Name"
+    const description = "Clone and deploy your own Frameless portfolio in minutes."
 </script>
-<BaseLayout config={config}>
+<BaseLayout config={config} title={title} description={description}>
+        <h1>Your Name</h1>
+
+        <p>Hey, I'm a Senior Software Engineer at Company. I enjoy working with Frameless and crafting beautiful
+            front-end
+            experiences.</p>
+
+        <p>This portfolio is built with <strong>Frameless</strong>.</p>
+
+        <p><Button filled is="a" target="_blank" rel="noopener"
+                href="https://vercel.com/new/git/external?repository-url=https://github.com/ksenginew/frameless-portfolio-starter&amp;project-name=portfolio&amp;repository-name=portfolio"><strong>Deploy
+                    your own</strong>
+                    <Icon icon="caret-up-fill"/>
+                </Button> in a few minutes.</p>
+
 </BaseLayout>

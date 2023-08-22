@@ -1,0 +1,65 @@
+<script>
+  import { addClass } from "./shared/css.js";
+  const { filled, border, round, ...props } = $.props;
+  addClass(
+    props,
+    $.style.button,
+    filled && $.style.filled,
+    border && "border",
+    round && "round",
+  );
+</script>
+<button {...props}>
+  <slot />
+</button>
+<style>
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    height: 2.5em;
+    min-width: 3rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: hsl(var(--color-primary), 40%);
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    border: 0;
+    border-radius: 0.25rem;
+    background-color: transparent;
+    transition:
+      color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
+  }
+
+  .button:hover {
+    background-color: hsl(var(--color-primary), 92%);
+  }
+
+  .button + .button {
+    margin-left: 0.5rem;
+  }
+
+  .filled {
+    background-color: hsl(var(--color-primary), 40%);
+    color: hsl(var(--color-primary), 99%);
+  }
+
+  .filled:hover {
+    background-color: hsl(var(--color-primary), 32%);
+  }
+
+  .filled:focus {
+    background-color: hsl(var(--color-primary), 28%);
+  }
+</style>
