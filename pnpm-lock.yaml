@@ -899,6 +899,7 @@ packages:
     resolution: {directory: '', type: directory}
     name: frameless
     dependencies:
+      '@remix-run/node': 1.19.3
       node-fetch: 2.6.13
       parse5: 7.1.2
     dev: false
