@@ -11,9 +11,6 @@ dependencies:
   frameless:
     specifier: file:.
     version: 'file:'
-  parse5:
-    specifier: ^7.1.2
-    version: 7.1.2
 
 devDependencies:
   '@types/minimist':
@@ -43,9 +40,6 @@ devDependencies:
   sucrase:
     specifier: ^3.34.0
     version: 3.34.0
-  typescript:
-    specifier: ^5.1.6
-    version: 5.1.6
   ws:
     specifier: ^8.13.0
     version: 8.13.0
@@ -807,12 +801,6 @@ packages:
 
   /ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
-    dev: true
-
-  /typescript@5.1.6:
-    resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
-    engines: {node: '>=14.17'}
-    hasBin: true
     dev: true
 
   /union@0.5.0:

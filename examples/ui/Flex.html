@@ -1,0 +1,44 @@
+<script>
+  import { addClass } from "./shared/css.js";
+  const { is: Is = "div", container, xs, ...props } = $.props;
+  props.style = `--grid-xs:${xs};`
+  addClass(props, container ? $.style.container : $.style.item);
+</script>
+
+<Is {...props}>
+  <slot />
+</Is>
+
+<style>
+  .container {
+    --grid-columns: 12;
+    --grid-column-spacing: 16px;
+    --grid-row-spacing: 16px;
+    flex-flow: wrap;
+    min-width: 0px;
+    display: flex;
+  }
+
+  .item {
+    flex-grow: 0;
+    flex-basis: auto;
+    width: calc(100% * var(--grid-xs) / var(--grid-columns));
+    min-width: 0px;
+  }
+
+  .flex-1 {
+    flex: 1 1 0%;
+  }
+
+  .flex-auto {
+    flex: 1 1 auto;
+  }
+
+  .flex-initial {
+    flex: 0 1 auto;
+  }
+
+  .flex-none {
+    flex: none;
+  }
+</style>

@@ -1,0 +1,17 @@
+<script>
+  import { addClass } from "./shared/css.js";
+  const { is: Is = "div", ...props } = $.props;
+  addClass(props, $.style.placeholder);
+</script>
+
+<Is {...props}>
+  <slot />
+</Is>
+
+<style>
+  .placeholder {
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: whitesmoke;
+  }
+</style>

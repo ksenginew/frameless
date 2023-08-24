@@ -10,7 +10,6 @@ import posix from "path/posix";
 
 const client_code = `
 const socket = new WebSocket("ws://localhost:3001");
-
 socket.addEventListener("open", (event) => {
 });
 
@@ -34,9 +33,52 @@ async function dev(file) {
   }
 }
 
-let argv = minimist(process.argv.slice(2));
+const RE =
+  /<!--[^]*?-->|<[!?][^]*?>|<script(\s[^]*?)?>([^]*?)<\/script>|<style(\s[^]*?)?>([^]*?)<\/style>/g;
+/**
+ * @param {string} src
+ * @param {string} id
+ */
+function compiler(src, id) {
+  let js = "";
+  let style = "";
+  src = src.replace(RE, (_, attr, code, sattr, css) => {
+    if (css) style += css;
+    if (css || (attr && attr.indexOf("client") !== -1)) return "";
+    if (code) js += code;
+    return "";
+  });
+  /** @type Record<string,string> */
+  let stylemap = {};
+  style = style
+    .replace(/\/\*[^]*?\*\/|  +/g, "")
+    .replace(/([^;}{]*?) *{/g, (selectors) => {
+      return selectors
+        .trim()
+        .replace(/\n+/g, " ")
+        .replace(/\.([\u0080-\uFFFF\w-%@]+)/g, (_, k) => {
+          if (stylemap[k]) return "." + stylemap[k];
+          let id = "_" + Math.random().toString(36).slice(2);
+          stylemap[k] = id;
+          return "." + id;
+        });
+    });
+  return `import {create_ssr_component as $$csc, html} from 'frameless';` +
+    `const {atob,btoa,Blob,File,Headers,Request,Response,fetch,FormData,ReadableStream,WritableStream,AbortController}=require("module").createRequire(__filename)("@remix-run/node");` +
+    `const App = $$csc(async function($){$.results.css.add(${JSON.stringify(
+      style,
+    )});$.style=${JSON.stringify(
+      stylemap,
+    )};${js};return <>${src}</>});export default App;`;
+}
+
+const runtime = createRuntime(compiler);
+
+const doc = ``;
+const argv = minimist(process.argv.slice(2));
 let root = argv._[0] || ".";
 root = path.resolve(process.cwd(), root);
+
 polka()
   .use(async (req, res, next) => {
     const filePath = posix.normalize(req.path);
@@ -72,11 +114,11 @@ polka()
       result = result.replace(
         /(?<=<head[^]*?>)/,
         "<script>" +
-          client_code +
-          "</script>" +
-          "<style>" +
-          [...css].join("") +
-          "</style>",
+        client_code +
+        "</script>" +
+        "<style>" +
+        [...css].join("") +
+        "</style>",
       );
       dev(index);
       const time = Date.now() - start;
@@ -95,46 +137,6 @@ polka()
   .listen(3000, () => {
     console.info(`> Running on localhost:3000`);
   });
-
-const RE =
-  /<!--[^]*?-->|<[!?][^]*?>|<script(\s[^]*?)?>([^]*?)<\/script>|<style(\s[^]*?)?>([^]*?)<\/style>/g;
-/**
- * @param {string} src
- * @param {string} id
- */
-function compiler(src, id) {
-  let js = "";
-  let style = "";
-  src = src.replace(RE, (_, attr, code, sattr, css) => {
-    if (css) style += css;
-    if (css || (attr && attr.indexOf("client") !== -1)) return "";
-    if (code) js += code;
-    return "";
-  });
-  /** @type Record<string,string> */
-  let stylemap = {};
-  style = style
-    .replace(/\/\*[^]*?\*\/|  +/g, "")
-    .replace(/([^;}{]*?) *{/g, (selectors) => {
-      return selectors
-        .trim()
-        .replace(/\n+/g, " ")
-        .replace(/\.([\u0080-\uFFFF\w-%@]+)/g, (_, k) => {
-          if (stylemap[k]) return "." + stylemap[k];
-          let id = "_" + Math.random().toString(36).slice(2);
-          stylemap[k] = id;
-          return "." + id;
-        });
-    });
-  return `import {create_ssr_component as $$csc, html} from 'frameless';const {atob,btoa,Blob,File,Headers,Request,Response,fetch,FormData,ReadableStream,WritableStream,AbortController}=require("module").createRequire(__filename)("@remix-run/node");`+
-  `const App = $$csc(async function($){$.results.css.add(${JSON.stringify(
-    style,
-  )});$.style=${JSON.stringify(
-    stylemap,
-  )};${js};return <>${src}</>});export default App;`;
-}
-let runtime = createRuntime(compiler);
-
 const wss = new WebSocketServer({ port: 3001 });
 /** @type {WebSocket[]} */
 let clients = [];
