@@ -1,0 +1,14 @@
+<script setup>
+    const key = Math.random().toString(36).slice(2)
+    export function useFela($, data) {
+        return {
+            css(fn) { $.context[key].renderRule(fn, data) },
+            keyframe(fn) { $.context[key].renderKeyframe(fn, data) },
+            global(fn) { $.context[key].renderStatic(fn, data) },
+        }
+    }
+</script>
+<script>
+    $.context[key] = $.props.renderer
+</script>
+<slot />

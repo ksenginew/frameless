@@ -118,6 +118,11 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
       if (id.startsWith("node:")) id = id.slice(5);
       else if (id.startsWith("file:")) id = fileURLToPath(id);
 
+      if(/\/node_modules\//.test(id)) {
+        console.log('node_module')
+        return nativeRequire(id);
+      }
+
       // Check for builtin node module like fs
       if (builtinModules.includes(id) || id === ".pnp.js" /* #24 */)
         return nativeRequire(id);
