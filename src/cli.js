@@ -42,10 +42,15 @@ const RE =
 function compiler(src, id) {
   let js = "";
   let style = "";
+  let setup = ""
   src = src.replace(RE, (_, attr, code, sattr, css) => {
     if (css) style += css;
+    if (attr && attr.indexOf("setup") !== -1) {
+      setup += code+';'
+      return "";
+    }
     if (css || (attr && attr.indexOf("client") !== -1)) return "";
-    if (code) js += code;
+    if (code) js += code+';';
     return "";
   });
   /** @type Record<string,string> */
@@ -65,11 +70,11 @@ function compiler(src, id) {
     });
   return `import {create_ssr_component as $$csc, html} from 'frameless';` +
     `const {atob,btoa,Blob,File,Headers,Request,Response,fetch,FormData,ReadableStream,WritableStream,AbortController}=require("module").createRequire(__filename)("@remix-run/node");` +
-    `const App = $$csc(async function($){$.results.css.add(${JSON.stringify(
+    `${setup}const App = $$csc(async function($){$.results.css.add(${JSON.stringify(
       style,
     )});$.style=${JSON.stringify(
       stylemap,
-    )};${js};return <>${src}</>});export default App;`;
+    )};${js}return <>${src}</>});export default App;`;
 }
 
 const runtime = createRuntime(compiler);
@@ -96,6 +101,7 @@ polka()
           props: {},
           slots: {},
           results: { html: "", css: new Set() },
+          context: {},
         });
         css = result.css;
         result = result.html;

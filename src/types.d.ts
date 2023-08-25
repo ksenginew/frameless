@@ -5,6 +5,7 @@ export interface $Context {
     html: string;
     css: Set<string>;
   };
+  context: Record<string, any>
 }
 export type FrComponentFactory = ($: $Context) => Promise<FrElement>;
 export type FrComponent = ($: $Context) => Promise<{

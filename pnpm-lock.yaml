@@ -25,6 +25,15 @@ devDependencies:
   '@types/ws':
     specifier: ^8.5.5
     version: 8.5.5
+  fela:
+    specifier: ^12.2.1
+    version: 12.2.1
+  fela-dom:
+    specifier: ^12.2.1
+    version: 12.2.1
+  fela-preset-web:
+    specifier: ^12.2.1
+    version: 12.2.1(fela@12.2.1)
   http-server:
     specifier: ^14.1.1
     version: 14.1.1
@@ -370,6 +379,16 @@ packages:
     engines: {node: '>= 0.4.0'}
     dev: true
 
+  /css-in-js-utils@3.1.0:
+    resolution: {integrity: sha512-fJAcud6B3rRu+KHYk+Bwf+WFL2MDCJJ1XG9x137tJQ0xYxor7XziQtuGFbWNdqrvF4Tk26O3H73nfVqXt/fW1A==}
+    dependencies:
+      hyphenate-style-name: 1.0.4
+    dev: true
+
+  /csstype@3.1.2:
+    resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
+    dev: true
+
   /data-uri-to-buffer@3.0.1:
     resolution: {integrity: sha512-WboRycPNsVw3B3TL559F7kuBUM4d8CgMEvk6xEJlOp7OBPjt6G7z8WMWlD2rOFZLk6OYfFIUGsCOWzcQH9K2og==}
     engines: {node: '>= 6'}
@@ -398,6 +417,90 @@ packages:
 
   /eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+    dev: true
+
+  /fast-loops@1.1.3:
+    resolution: {integrity: sha512-8EZzEP0eKkEEVX+drtd9mtuQ+/QrlfW/5MlwcwK5Nds6EkZ/tRzEexkzUY2mIssnAyVLT+TKHuRXmFNNXYUd6g==}
+    dev: true
+
+  /fela-dom@12.2.1:
+    resolution: {integrity: sha512-e6dJ6iCQdicLgZYht17yDx8s/nvFQ7cKcx7lMArBPegu6JwSFJO56ajcgiX1RoFoorTKZJhhDASJ9cKSHscOrg==}
+    dependencies:
+      css-in-js-utils: 3.1.0
+      fast-loops: 1.1.3
+      fela-utils: 12.2.1
+      sort-css-media-queries: 1.5.4
+    dev: true
+
+  /fela-plugin-embedded@12.2.1:
+    resolution: {integrity: sha512-fexRLSbl3uvB2SguS7aWjGbUNH9+s1YjPXSIUybPxi0Send8oKPvRbPqGGts3MpiBj/gz4VateeIRJLndq7CZA==}
+    dependencies:
+      fast-loops: 1.1.3
+      isobject: 3.0.1
+    dev: true
+
+  /fela-plugin-extend@12.2.1(fela@12.2.1):
+    resolution: {integrity: sha512-J6XJe+9V4+oaSR+p4/8A8RVTQK1/o6U4T/FY0dRATasyqc80zeQuCh8QjxGiMVeF1x1rqfpSrslLTBWENzVTWQ==}
+    peerDependencies:
+      fela: '>=11'
+    dependencies:
+      css-in-js-utils: 3.1.0
+      fast-loops: 1.1.3
+      fela: 12.2.1
+      fela-utils: 12.2.1
+      isobject: 3.0.1
+    dev: true
+
+  /fela-plugin-fallback-value@12.2.1:
+    resolution: {integrity: sha512-V70rO0DRljNUJBzRKHp0fXO/2TlOpszx6rgLaFL+jc0M37cyTwuXesSpduUIJRc6u5VliAO3R3yZeTOQAoUueQ==}
+    dependencies:
+      css-in-js-utils: 3.1.0
+      isobject: 4.0.0
+    dev: true
+
+  /fela-plugin-prefixer@12.2.1:
+    resolution: {integrity: sha512-qWNL/Cgj9QZHhtPt6Ti8ZhxDphkzi5s3stq03kd2LAdJqEGTP9IeuZE0rtPQjGYepXwswM3FJt/3mOKrdrypaQ==}
+    dependencies:
+      css-in-js-utils: 3.1.0
+      fast-loops: 1.1.3
+      isobject: 4.0.0
+      stylis: 4.3.0
+    dev: true
+
+  /fela-plugin-unit@12.2.1:
+    resolution: {integrity: sha512-+UZKsqRaHBFAxKKD9+AmWZfge8nNI/Lj/Qju1eV21uFL73OkVDZeQQ8v+VRJwn+3px6i7+n9bJpOz7eA8a0e3A==}
+    dependencies:
+      css-in-js-utils: 3.1.0
+      isobject: 4.0.0
+    dev: true
+
+  /fela-preset-web@12.2.1(fela@12.2.1):
+    resolution: {integrity: sha512-Qp5fOTBQKGa+d8tZEYUfZi5fZgDUGcb4/3PWP2rPxrVB9yPd5Adov8ohrPoYuW5R0ymP9LqyEP1qk51XZdglVg==}
+    dependencies:
+      fela-plugin-embedded: 12.2.1
+      fela-plugin-extend: 12.2.1(fela@12.2.1)
+      fela-plugin-fallback-value: 12.2.1
+      fela-plugin-prefixer: 12.2.1
+      fela-plugin-unit: 12.2.1
+    transitivePeerDependencies:
+      - fela
+    dev: true
+
+  /fela-utils@12.2.1:
+    resolution: {integrity: sha512-EohJ6/VXslYPXw9cAtTMP91GAWMYa++Wpppmnyp+Dp3KL01GzQB3ISKx/YH1uP/J13BtXq8e1F2xHBTnLDCSRw==}
+    dependencies:
+      css-in-js-utils: 3.1.0
+      fast-loops: 1.1.3
+    dev: true
+
+  /fela@12.2.1:
+    resolution: {integrity: sha512-20wRo5RLWCtq9ApRMHOAk/xnvkX+R6uuSqYGm03Mt64brqnJiSjV/4CsmBo94sMxslN07R3bItNndedK5Zzc1A==}
+    dependencies:
+      css-in-js-utils: 3.1.0
+      csstype: 3.1.2
+      fast-loops: 1.1.3
+      fela-utils: 12.2.1
+      isobject: 3.0.1
     dev: true
 
   /follow-redirects@1.15.2:
@@ -520,6 +623,10 @@ packages:
       - supports-color
     dev: true
 
+  /hyphenate-style-name@1.0.4:
+    resolution: {integrity: sha512-ygGZLjmXfPHj+ZWh6LwbC37l43MhfztxetbFCoYTM2VjkIUpeHgSNn7QIyVFj7YQ1Wl9Cbw5sholVJPzWvC2MQ==}
+    dev: true
+
   /iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
@@ -563,6 +670,16 @@ packages:
     dependencies:
       which-typed-array: 1.1.11
     dev: false
+
+  /isobject@3.0.1:
+    resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
+    engines: {node: '>=0.10.0'}
+    dev: true
+
+  /isobject@4.0.0:
+    resolution: {integrity: sha512-S/2fF5wH8SJA/kmwr6HYhK/RI/OkhD84k8ntalo0iJjZikgq1XFvR5M8NPT1x5F7fBwCG3qHfnzeP/Vh/ZxCUA==}
+    engines: {node: '>=0.10.0'}
+    dev: true
 
   /lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -728,6 +845,11 @@ packages:
       totalist: 3.0.1
     dev: true
 
+  /sort-css-media-queries@1.5.4:
+    resolution: {integrity: sha512-YP5W/h4Sid/YP7Lp87ejJ5jP13/Mtqt2vx33XyhO+IAugKlufRPbOrPlIiEUuxmpNBSBd3EeeQpFhdu3RfI2Ag==}
+    engines: {node: '>= 6.3.0'}
+    dev: true
+
   /source-map-support@0.5.21:
     resolution: {integrity: sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==}
     dependencies:
@@ -748,6 +870,10 @@ packages:
   /stream-slice@0.1.2:
     resolution: {integrity: sha512-QzQxpoacatkreL6jsxnVb7X5R/pGw9OUv2qWTYWnmLpg4NdN31snPy/f3TdQE1ZUXaThRvj1Zw4/OGg0ZkaLMA==}
     dev: false
+
+  /stylis@4.3.0:
+    resolution: {integrity: sha512-E87pIogpwUsUwXw7dNyU4QDjdgVMy52m+XEOPEKUn161cCzWjjhPSQhByfd1CcNvrOLnXQ6OnnZDwnJrz/Z4YQ==}
+    dev: true
 
   /sucrase@3.34.0:
     resolution: {integrity: sha512-70/LQEZ07TEcxiU2dz51FKaE6hCTWC6vr7FOk3Gr0U60C3shtAN+H+BFr9XlYe5xqf3RA8nrc+VIwzCfnxuXJw==}

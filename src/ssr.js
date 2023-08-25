@@ -70,6 +70,7 @@ export async function renderToString(element, $) {
             html: "",
             css: $.results.css,
           },
+          context: { ...$.context }
         };
         try {
           return (await element.type($$)).html;
