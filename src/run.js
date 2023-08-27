@@ -9,11 +9,27 @@ import { fileURLToPath } from "url";
 const isWindows = platform() === "win32";
 
 /**
+ * Transforms the input into a className.
+ * The multiplication constant 101 is selected to be a prime,
+ * as is the initial value of 11.
+ * The intermediate and final results are truncated into 32-bit
+ * unsigned integers.
+ * @param {String} str
+ * @returns {String}
+ */
+export let toHash = (str) => {
+  let i = 0,
+      out = 11;
+  while (i < str.length) out = (101 * out + str.charCodeAt(i++)) >>> 0;
+  return out+''
+};
+
+/**
  * @param {import("module")} [parentModule]
  * @param {(src: string, id: string) => string} compiler
- * @param {NodeJS.Dict<NodeModule>} [cache]
+ * @param {NodeJS.Dict<NodeModule|string>} [cache]
  */
-export function createRuntime(compiler, file = process.cwd(), parentModule, cache) {
+export function createRuntime(compiler, file = process.cwd(), parentModule, cache = {}) {
   // If file is dir, createRequire goes with parent directory, so we need fakepath
   if (lstatSync(file).isDirectory()) file = join(file, "index.js");
 
@@ -22,8 +38,6 @@ export function createRuntime(compiler, file = process.cwd(), parentModule, cach
       ? file.replace(/\//g, "\\") // Import maps does not work with normalized paths!
       : file,
   );
-
-  if (!cache) cache = nativeRequire.cache
 
   /**
    * @param {string} id
@@ -111,6 +125,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule, cach
   function runtime(id, src) {
     let source;
     let filename;
+    let hash
     let ext;
     if (src) {
       source = src;
@@ -139,6 +154,11 @@ export function createRuntime(compiler, file = process.cwd(), parentModule, cach
 
       // Read source
       source = readFileSync(filename, "utf-8");
+      hash = toHash(source)
+
+      if (cache[filename] === hash)
+        // @ts-ignore
+        return cache["~"+filename].exports
     }
 
     // Transpile
@@ -185,12 +205,15 @@ export function createRuntime(compiler, file = process.cwd(), parentModule, cach
     // Set as loaded
     mod.loaded = true;
 
+    cache[filename] = hash
+    cache["~"+filename] = mod
+    
     // Return exports
     return mod.exports;
   }
 
   runtime.resolve = resolve;
-  runtime.cache = cache
+  runtime.cache = nativeRequire.cache
   runtime.extensions = nativeRequire.extensions;
   runtime.main = nativeRequire.main;
   runtime.transform = transform;

@@ -1,6 +1,9 @@
 <script>
     const { title, description, image } = $.props
     import Container from "../../ui/Container.html";
+    import { createRenderer } from 'fela'
+    import plugins from 'fela-preset-web'
+    const renderer = createRenderer({ plugins })
 </script>
 <!DOCTYPE html>
 <html>
@@ -24,6 +27,7 @@
 </head>
 
 <body>
+    <Fela renderer={renderer}>
     <Container>
 
         <slot />
@@ -42,6 +46,7 @@
         <hr />
         {new Date().getFullYear()} © Your Name.
     </Container>
+    </Fela>
 </body>
 
 </html>
