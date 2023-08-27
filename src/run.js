@@ -11,8 +11,9 @@ const isWindows = platform() === "win32";
 /**
  * @param {import("module")} [parentModule]
  * @param {(src: string, id: string) => string} compiler
+ * @param {NodeJS.Dict<NodeModule>} [cache]
  */
-export function createRuntime(compiler, file = process.cwd(), parentModule) {
+export function createRuntime(compiler, file = process.cwd(), parentModule, cache) {
   // If file is dir, createRequire goes with parent directory, so we need fakepath
   if (lstatSync(file).isDirectory()) file = join(file, "index.js");
 
@@ -22,6 +23,8 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
       : file,
   );
 
+  if (!cache) cache = nativeRequire.cache
+
   /**
    * @param {string} id
    * @param { { paths?: string[] }} [options]
@@ -29,7 +32,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
   function tryResolve(id, options) {
     try {
       return nativeRequire.resolve(id, options);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   /**
@@ -118,7 +121,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
       if (id.startsWith("node:")) id = id.slice(5);
       else if (id.startsWith("file:")) id = fileURLToPath(id);
 
-      if(/\/node_modules\//.test(id)) {
+      if (/\/node_modules\//.test(id)) {
         console.log('node_module')
         return nativeRequire(id);
       }
@@ -154,7 +157,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
     )
       parentModule.children.push(mod);
 
-    mod.require = createRuntime(compiler, filename, mod);
+    mod.require = createRuntime(compiler, filename, mod, cache);
 
     mod.path = dirname(filename);
 
@@ -187,7 +190,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule) {
   }
 
   runtime.resolve = resolve;
-  runtime.cache = nativeRequire.cache;
+  runtime.cache = cache
   runtime.extensions = nativeRequire.extensions;
   runtime.main = nativeRequire.main;
   runtime.transform = transform;
