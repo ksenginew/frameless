@@ -5,7 +5,3 @@ export { create_ssr_component } from "./ssr.js";
 export function html(data) {
   return { $$typeof: "html", data: data + "" };
 }
-
-export function setContext($,){
-
-}
