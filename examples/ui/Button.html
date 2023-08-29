@@ -18,6 +18,7 @@
     cursor: "pointer",
     userSelect: "none",
     border: "0",
+    ...(border?{border:'1px solid gray'}:{}),
     borderRadius: dp(20),
     backgroundColor: "transparent",
     transition:
@@ -26,20 +27,20 @@
     ":focus": { backgroundColor: hsl(Var('color-primary'), '88%') },
     ":active": { backgroundColor: hsl(Var('color-primary'), '84%') },
     "& ": { marginLeft: "0.5rem" },
-    "&.tonal": tonal && {
+    ...(tonal ? {
       backgroundColor: hsl(Var('color-primary'), '90%'),
       color: hsl(Var('color-primary'), '1%'),
       ":hover": { backgroundColor: hsl(Var('color-primary'), '82%') },
       ":focus": { backgroundColor: hsl(Var('color-primary'), '78%') },
       ":active": { backgroundColor: hsl(Var('color-primary'), '74%') },
-    },
-    "&.filled": filled && {
+    } : {}),
+    ...(filled ? {
       backgroundColor: hsl(Var('color-primary'), '40%'),
       color: hsl(Var('color-primary'), '99%'),
       ":hover": { backgroundColor: hsl(Var('color-primary'), '48%') },
       ":focus": { backgroundColor: hsl(Var('color-primary'), '52%') },
       ":active": { backgroundColor: hsl(Var('color-primary'), '56%') },
-    }
+    } : {})
   })
 </script>
 <script>
