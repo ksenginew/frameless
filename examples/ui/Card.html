@@ -1,6 +1,5 @@
 <script>
   import { useFela,extract } from "./Fela.html"
-  import Style from "./Style.html"
   const { is: Is = "div", ...props } = $.props;
   const { css } = useFela($, props)
   props.class = css(()=>({
@@ -12,3 +11,4 @@
 <Is {...props}>
   <slot />
 </Is>
+

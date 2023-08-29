@@ -29,10 +29,13 @@ export function create_ssr_component(fn) {
  */
 export async function renderToString(element, $) {
   if (!element) return "";
-  else if (Array.isArray(element))
-    return (await Promise.all(element.map((e) => renderToString(e, $)))).join(
-      "",
-    );
+  else if (Array.isArray(element)) {
+    let result = ""
+    for (const child of element) {
+      result += await renderToString(child, $)
+    }
+    return result
+  }
   else if (typeof element === "object")
     // @ts-ignore
     if (element.$$typeof === "html")
