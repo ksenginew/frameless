@@ -1,0 +1,25 @@
+<script>
+    import Fela from "./Fela.html"
+    import Button from "./Button.html"
+    import { createRenderer } from 'fela'
+    import plugins from 'fela-preset-web'
+    const renderer = createRenderer({ plugins })
+</script>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" href="./base.css" />
+</head>
+
+<body>
+    <Fela renderer={renderer}>
+        <h1>Buttons</h1>
+        <Button>Button</Button>
+        <Button filled>Filled</Button>
+        <Button tonal>Tonal</Button>
+    </Fela>
+</body>
+
+</html>

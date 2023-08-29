@@ -1,40 +1,52 @@
-<script>
-  import { useFela, extract } from "./Fela.html"
-  const { is: Is, filled, border, round, ...props } = $.props;
-  const { css } = useFela($, props)
-  props.class = css(() => ({
+<script setup>
+  import { clsx, dp, hsl, Var } from "./shared/css.js"
+  const styles = ({ filled, tonal }) => ({
     display: "inline-flex",
     alignItems: "center",
-    gap: "0.5em",
-    paddingLeft: "0.75em",
-    paddingRight: "0.75em",
-    height: "2.5em",
-    minWidth: "3rem",
+    gap: dp(8),
+    paddingLeft: dp(12),
+    paddingRight: dp(12),
+    height: dp(40),
+    minWidth: dp(48),
     fontSize: "1rem",
     fontWeight: 500,
     lineHeight: 1.5,
-    color: "hsl(var(--color-primary), 40%)",
+    color: hsl(Var('color-primary'), '40%'),
     textAlign: "center",
     textDecoration: "none",
     verticalAlign: "middle",
     cursor: "pointer",
-    WebkitUserSelect: "none",
-    MozUserSelect: "none",
     userSelect: "none",
     border: "0",
-    borderRadius: "0.25rem",
+    borderRadius: dp(20),
     backgroundColor: "transparent",
     transition:
       "color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out",
-    ":hover": { backgroundColor: "hsl(var(--color-primary), 92%)" },
-    "& + &": { marginLeft: "0.5rem" },
-    "& .filled": {
-      backgroundColor: "hsl(var(--color-primary), 40%)",
-      color: "hsl(var(--color-primary), 99%)",
-      ":hover": { backgroundColor: "hsl(var(--color-primary), 32%)" },
-      ":focus": { backgroundColor: "hsl(var(--color-primary), 28%)" }
+    ":hover": { backgroundColor: hsl(Var('color-primary'), '92%') },
+    ":focus": { backgroundColor: hsl(Var('color-primary'), '88%') },
+    ":active": { backgroundColor: hsl(Var('color-primary'), '84%') },
+    "& ": { marginLeft: "0.5rem" },
+    "&.tonal": tonal && {
+      backgroundColor: hsl(Var('color-primary'), '90%'),
+      color: hsl(Var('color-primary'), '1%'),
+      ":hover": { backgroundColor: hsl(Var('color-primary'), '82%') },
+      ":focus": { backgroundColor: hsl(Var('color-primary'), '78%') },
+      ":active": { backgroundColor: hsl(Var('color-primary'), '74%') },
+    },
+    "&.filled": filled && {
+      backgroundColor: hsl(Var('color-primary'), '40%'),
+      color: hsl(Var('color-primary'), '99%'),
+      ":hover": { backgroundColor: hsl(Var('color-primary'), '48%') },
+      ":focus": { backgroundColor: hsl(Var('color-primary'), '52%') },
+      ":active": { backgroundColor: hsl(Var('color-primary'), '56%') },
     }
-  }))
+  })
+</script>
+<script>
+  import { useFela, extract } from "./Fela.html"
+  const { is: Is = 'button', filled, tonal, border, round, ...props } = $.props;
+  const { css } = useFela($, { filled, tonal })
+  props.class = clsx(props.class, css(styles))
 </script>
 <Is {...props}>
   <slot />
