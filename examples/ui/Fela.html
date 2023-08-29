@@ -1,14 +1,23 @@
 <script setup>
+    import { renderToMarkup } from 'fela-dom'
+    import Style from './Style.html'
     const key = Math.random().toString(36).slice(2)
     export function useFela($, data) {
         return {
-            css(fn) { $.context[key].renderRule(fn, data) },
-            keyframe(fn) { $.context[key].renderKeyframe(fn, data) },
-            global(fn) { $.context[key].renderStatic(fn, data) },
+            css(fn) { return $.context[key].renderRule(fn, data) },
+            keyframe(fn) { return $.context[key].renderKeyframe(fn, data) },
+            global(fn) { return $.context[key].renderStatic(fn, data) },
         }
+    }
+    export function extract($) {
+        return renderToMarkup($.context[key])
     }
 </script>
 <script>
+    import { renderToMarkup } from 'fela-dom'
+
     $.context[key] = $.props.renderer
 </script>
+
 <slot />
+<Style/>

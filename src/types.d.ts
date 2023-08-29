@@ -1,6 +1,6 @@
 export interface $Context {
   props: Record<string, any>;
-  slots: Record<string, () => Promise<string>>;
+  slots: Record<string, (context:Record<string, any>) => Promise<string>>;
   results: {
     html: string;
     css: Set<string>;

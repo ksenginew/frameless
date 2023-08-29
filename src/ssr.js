@@ -12,23 +12,6 @@ let map = { "&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "apos" };
 let sanitized = {};
 
 /**
- * @param {string | import("./types").FrElement | (string | import("./types").FrElement | undefined)[] | undefined} children
- * @param {{[x: string]: () => Promise<string>;}} manager
- * @param {import("./types").$Context} $
- */
-function findSlots(manager, children, $) {
-  if (typeof children === "object")
-    if (Array.isArray(children))
-      children.forEach((c) => findSlots(manager, c, $));
-    else if (children.props.slot) {
-      let name = children.props.slot;
-      if (name in manager) throw Error("duplicate slot name `" + name + "`");
-      manager[name] = () => renderToString(children, $);
-    }
-  return manager;
-}
-
-/**
  * @param {import("./types").FrComponentFactory} fn
  */
 export function create_ssr_component(fn) {
@@ -51,21 +34,38 @@ export async function renderToString(element, $) {
       "",
     );
   else if (typeof element === "object")
+    // @ts-ignore
     if (element.$$typeof === "html")
-      // @ts-ignore
       return element.data;
     else {
       if (typeof element.type == "symbol")
         return await renderToString(element.props?.children, $);
       else if (typeof element.type == "function") {
         let { children, ...args } = element.props;
-        /** @type {Record<string, () => Promise<string>>} */
+        /** @type {Record<string, (context:Record<string, any>) => Promise<string>>} */
         let manager = {};
-        if (children) manager.default = () => renderToString(children, $);
+        if (Array.isArray(children)) {
+          /**
+           * @type {string | import("./types").FrElement | (string | import("./types").FrElement | undefined)[] | undefined}
+           */
+          let default_children = []
+          for (const child of children) {
+            if (typeof child === "object") {
+              let name = child.props.slot;
+              if (!name) default_children.push(child)
+              else if (name in manager) throw Error("duplicate slot name `" + name + "`");
+              else manager[name] = (ctx) => renderToString(children, { ...$, context: ctx });
+            } else default_children.push(child)
+          }
+          manager.default = (ctx) => renderToString(default_children, { ...$, context: ctx });
+        }
+        // @ts-ignore
+        manager[(children && children.name) || "default"] = (ctx) => renderToString(children, { ...$, context: ctx });
+
         /** @type {import("./types").$Context} */
         let $$ = {
           props: args,
-          slots: findSlots(manager, children, $),
+          slots: manager,
           results: {
             html: "",
             css: $.results.css,
@@ -93,7 +93,7 @@ export async function renderToString(element, $) {
         let is_void = void_element_names.test(tagName);
         if (tagName == "slot") {
           let fn = $.slots[element.props.name || "default"];
-          if (fn) return await fn();
+          if (fn) return await fn($.context);
           else return await renderToString(children, $);
         }
         return (

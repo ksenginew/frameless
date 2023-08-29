@@ -1,6 +1,8 @@
 <script>
     const { title, description, image } = $.props
     import Container from "../../ui/Container.html";
+    import Fela from "../../ui/Fela.html";
+    import Style from "../../ui/Style.html";
     import { createRenderer } from 'fela'
     import plugins from 'fela-preset-web'
     const renderer = createRenderer({ plugins })
@@ -28,24 +30,24 @@
 
 <body>
     <Fela renderer={renderer}>
-    <Container>
+        <Container>
 
-        <slot />
+            <slot />
 
-        <hr />
-        Twitter @yourname
-
-
-        GitHub @yourname
+            <hr />
+            Twitter @yourname
 
 
-        Instagram @yourname
+            GitHub @yourname
 
 
-        Email your@name.com
-        <hr />
-        {new Date().getFullYear()} © Your Name.
-    </Container>
+            Instagram @yourname
+
+
+            Email your@name.com
+            <hr />
+            {new Date().getFullYear()} © Your Name.
+        </Container>
     </Fela>
 </body>
 

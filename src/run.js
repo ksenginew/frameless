@@ -19,9 +19,9 @@ const isWindows = platform() === "win32";
  */
 export let toHash = (str) => {
   let i = 0,
-      out = 11;
+    out = 11;
   while (i < str.length) out = (101 * out + str.charCodeAt(i++)) >>> 0;
-  return out+''
+  return out + ''
 };
 
 /**
@@ -158,7 +158,7 @@ export function createRuntime(compiler, file = process.cwd(), parentModule, cach
 
       if (cache[filename] === hash)
         // @ts-ignore
-        return cache["~"+filename].exports
+        return cache["~" + filename].exports
     }
 
     // Transpile
@@ -184,7 +184,6 @@ export function createRuntime(compiler, file = process.cwd(), parentModule, cach
     // @ts-ignore
     mod.paths = Module._nodeModulePaths(mod.path);
 
-    debugger;
     // Compile wrapped script
     // mod._compile wraps require and require.resolve to global function
     vm.runInNewContext(
@@ -206,8 +205,8 @@ export function createRuntime(compiler, file = process.cwd(), parentModule, cach
     mod.loaded = true;
 
     cache[filename] = hash
-    cache["~"+filename] = mod
-    
+    cache["~" + filename] = mod
+
     // Return exports
     return mod.exports;
   }

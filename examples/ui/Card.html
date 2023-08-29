@@ -1,16 +1,13 @@
 <script>
-  import { addClass } from "./shared/css.js";
+  import { useFela } from "./Fela.html"
   const { is: Is = "div", ...props } = $.props;
-  addClass(props, $.style.card);
+  const { css } = useFela($, props)
+  props.class = css(()=>({
+    borderRadius: '12px',
+    overflow: 'hidden'
+  }))
 </script>
 
 <Is {...props}>
   <slot />
 </Is>
-
-<style>
-  .card {
-    border-radius: 12px;
-    overflow: hidden;
-  }
-</style>
