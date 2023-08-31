@@ -1,0 +1,11 @@
+<script>
+    const { prefetch, href, ...props } = $.props
+    if(!href) throw Error("`href` is required.")
+</script>
+
+<a {...props} href={href}>
+    <slot />
+</a>
+{prefetch ?
+<link rel="prefetch" href={href} />
+:""}

@@ -1,5 +1,6 @@
 <script>
     import Image from './Image.html'
+    import Link from './Link.html'
     import Layout from './Layout.html'
 
     const { main, nav, hero, features, card, nolink, alert } = $.style
@@ -21,61 +22,61 @@
         </div>
 
         <div class={features}>
-            <a class={link_card}
+            <Link class={link_card}
                 href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
                 target="_blank" rel="noopener noreferrer">
-                <h2>
-                    Docs{' '}
-                    <span>
-                        -&gt;
-                    </span>
-                </h2>
-                <p>
-                    Find in-depth information about Next.js features and API.
-                </p>
-            </a>
+            <h2>
+                Docs{' '}
+                <span>
+                    -&gt;
+                </span>
+            </h2>
+            <p>
+                Find in-depth information about Next.js features and API.
+            </p>
+            </Link>
 
-            <a class={link_card}
+            <Link class={link_card}
                 href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
                 target="_blank" rel="noopener noreferrer">
-                <h2>
-                    Learn{' '}
-                    <span>
-                        -&gt;
-                    </span>
-                </h2>
-                <p>
-                    Learn about Next.js in an interactive course with&nbsp;quizzes!
-                </p>
-            </a>
+            <h2>
+                Learn{' '}
+                <span>
+                    -&gt;
+                </span>
+            </h2>
+            <p>
+                Learn about Next.js in an interactive course with&nbsp;quizzes!
+            </p>
+            </Link>
 
-            <a class={link_card}
+            <Link class={link_card}
                 href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
                 target="_blank" rel="noopener noreferrer">
-                <h2>
-                    Templates{' '}
-                    <span>
-                        -&gt;
-                    </span>
-                </h2>
-                <p>
-                    Explore the Next.js 13 playground.
-                </p>
-            </a>
+            <h2>
+                Templates{' '}
+                <span>
+                    -&gt;
+                </span>
+            </h2>
+            <p>
+                Explore the Next.js 13 playground.
+            </p>
+            </Link>
 
-            <a class={link_card}
+            <Link class={link_card}
                 href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
                 target="_blank" rel="noopener noreferrer">
-                <h2>
-                    Deploy{' '}
-                    <span>
-                        -&gt;
-                    </span>
-                </h2>
-                <p>
-                    Instantly deploy your Next.js site to a shareable URL with Vercel.
-                </p>
-            </a>
+            <h2>
+                Deploy{' '}
+                <span>
+                    -&gt;
+                </span>
+            </h2>
+            <p>
+                Instantly deploy your Next.js site to a shareable URL with Vercel.
+            </p>
+            </Link>
         </div>
     </main>
 </Layout>
@@ -84,19 +85,19 @@
     .main {
         margin-left: auto;
         margin-right: auto;
-        max-width: 1024px;
+        padding: 6rem;
     }
 
     .nav {
         display: flex;
-        padding: 5rem 0;
+        justify-content: center;
     }
 
     .hero {
         display: flex;
-        align-content: center;
+        align-items: center;
         justify-content: center;
-        margin-bottom: 4rem;
+        height: 13rem;
     }
 
     .features {
@@ -108,6 +109,10 @@
         .features {
             grid-auto-flow: column;
             grid-auto-columns: 1fr;
+        }
+
+        .nav {
+            justify-content: start;
         }
     }
 
@@ -132,6 +137,7 @@
         max-width: 25em;
         border: 1px solid #d3d3d3;
         padding: 1rem;
+        margin: 0;
         border-radius: 0.5rem;
     }
 </style>
