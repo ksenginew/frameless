@@ -135,7 +135,6 @@ polka()
       });
       res.end(result);
     } catch (e) {
-      console.log(e);
       next();
     }
   })
