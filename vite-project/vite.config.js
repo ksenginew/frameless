@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
-
+import {transform as sucrase} from "sucrase"
 
 const RE =
   /<!--[^]*?-->|<[!?][^]*?>|<script(\s[^]*?)?>([^]*?)<\/script>|<style(\s[^]*?)?>([^]*?)<\/style>/g;
@@ -30,7 +30,8 @@ function compiler(template) {
 }
 
 export default defineConfig({
-  plugins: [
+  plugins: [  react(),
+
     (() => {
       /**
        * @type {import("vite").ViteDevServer}
@@ -45,16 +46,24 @@ export default defineConfig({
           order: 'pre',
           async transform(html, ctx) {
             let { render } = await vite.ssrLoadModule(ctx.filename)
-            return await render()
+            return JSON.stringify(await render())
           }
         },
         async transform(code, id) {
           if (id.endsWith('.html')) {
             const { server, template, style, client, setup } = compiler(code)
-            console.log((await vite.ssrTransform(setup + `export async function render(){`+
-            server+
-            `return "hi"}`, null, "./sss"))?.code)
-            return setup + `export async function render(){return "hi"}`
+            
+            let tt = `const React = {createElement:(...args)=>args,Fragment:null};`
+            +setup + `export async function render(){` +
+              `return <>` + template + `</>}`;
+              let _code = sucrase(tt, {
+                filePath:id,
+                transforms:["jsx", "typescript"],
+                preserveDynamicImport: true
+              });
+              // console.log((await vite.ssrTransform(tt, null, "./sss"))?.code)
+              
+              return _code.code
           }
         },
         load(id, { ssr } = {}) {
@@ -76,4 +85,10 @@ export default defineConfig({
   build: {
     minify: false,
   },
+  esbuild:{
+    jsx:'transform',
+    jsxDev:true,
+    jsxFactory:'h',
+    jsxFragment:'null'
+  }
 })
