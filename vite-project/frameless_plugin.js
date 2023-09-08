@@ -54,12 +54,11 @@ export function frameless_plugin() {
                 const { server, template, style, client, setup } = compiler(code)
 
                 let tt = `import {create_ssr_component as $$csc, html} from 'frameless';` +
-                    setup + `const App = $$csc(` +
+                    setup + `export default $$csc(` +
                     `async function($){` +
                     `$.results.css.add(${JSON.stringify(style,)});` +
                     `$.style=${JSON.stringify({},)};` +
-                    server + `return <>${template}</>});` +
-                    `export default App;`;
+                    server + `return <>${template}</>});`
                 let _code = sucrase(tt, {
                     filePath: id,
                     transforms: ["jsx", "typescript"],
@@ -67,7 +66,7 @@ export function frameless_plugin() {
                     jsxRuntime: "automatic",
                     jsxImportSource: "frameless",
                 });
-                // console.log((await vite.ssrTransform(tt, null, "./sss"))?.code)
+                console.log((await vite.ssrTransform(_code.code, null, "./sss"))?.code)
 
                 return _code.code
             }
