@@ -1,4 +1,4 @@
-export { create_ssr_component } from "./ssr.js";
+export { create_ssr_component, renderToString } from "./ssr.js";
 /**
  * @param {any} data
  */

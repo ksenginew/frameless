@@ -1,5 +1,3 @@
-import { FR_ELEMENT_TYPE } from "./jsx";
-
 /** regex of all html void element names */
 const void_element_names =
   /^(?:area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)$/;
